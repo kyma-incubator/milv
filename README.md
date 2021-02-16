@@ -1,5 +1,7 @@
 # Markdown internal & external links validation
 
+## Overview
+
 `MILV` is a bot that parses, checks and validates internal & external URLs links in markdown files. It can be used for [verification pull requests](#validate-pull-requests) and also as standalone library.
 
 ## Installation
@@ -14,7 +16,7 @@ After installation, run the program with `milv` from anywhere in the file system
 
 ### Run the code from source
 
-If you want run the code without installation, run the following commands to get the source code, resolve external dependencies and build the project. 
+If you want run the code without installation, run the following commands to get the source code, resolve external dependencies and build the project.
 
 For this operations you must have also installed package manager [Dep](https://github.com/golang/dep).
 
@@ -31,33 +33,33 @@ go build
 
 You can use the following parameters while using `milv` binary:
 
-| Name        | Description    | Default Value       |
-|-------------|----------------|---------------------|
-| `-base-path` | root directory of repository | `""`
-| `-config-file` | configuration file for bot. See [more](#config-file) | `milv.config.yaml`
-| `-white-list-ext` | comma separate external links which will not be checked | `[]`
-| `-white-list-int` | comma separate internal links which will not be checked  | `[]`
-| `-black-list` | comma separate files which will not be checked | `[]`
-| `-allow-redirect` | redirects will be allowed | `false`
-| `-request-repeats` | number of request repeats | `1`
-| `-allow-code-blocks` | checking links in code blocks | `false`
-| `-timeout` | connection timeout (in seconds) | `30`
-| `-ignore-external` | ignore external links | `false`
-| `-ignore-internal` | ignore internal links | `false`
-| `-v` | enable verbose logging | `false`
-| `-help` or `-h` | Show available parameters | n/a
+| Name                 | Description                                             | Default Value      |
+| -------------------- | ------------------------------------------------------- | ------------------ |
+| `-base-path`         | root directory of repository                            | `""`               |
+| `-config-file`       | configuration file for bot. See [more](#config-file)    | `milv.config.yaml` |
+| `-white-list-ext`    | comma separate external links which will not be checked | `[]`               |
+| `-white-list-int`    | comma separate internal links which will not be checked | `[]`               |
+| `-black-list`        | comma separate files which will not be checked          | `[]`               |
+| `-allow-redirect`    | redirects will be allowed                               | `false`            |
+| `-request-repeats`   | number of request repeats                               | `1`                |
+| `-allow-code-blocks` | checking links in code blocks                           | `false`            |
+| `-timeout`           | connection timeout (in seconds)                         | `30`               |
+| `-ignore-external`   | ignore external links                                   | `false`            |
+| `-ignore-internal`   | ignore internal links                                   | `false`            |
+| `-v`                 | enable verbose logging                                  | `false`            |
+| `-help` or `-h`      | Show available parameters                               | n/a                |
 
 Files to be checked are given as free parameters.
 
 ### Examples
 
-* Checks all links, without matching `github.com` in external links, in `.md` files in current directory+subdirectories without files matching `vendor` in path:
+- Checks all links, without matching `github.com` in external links, in `.md` files in current directory+subdirectories without files matching `vendor` in path:
 
 ```bash
 milv -black-list="vendor" -white-lis-ext="github.com"
 ```
 
-* Checks links only in `./README.md` and `./foo/bar.md` files:
+- Checks links only in `./README.md` and `./foo/bar.md` files:
 
 ```bash
 milv ./README.md ./foo/bar.md
@@ -154,16 +156,16 @@ In this example we can see that `milv` will globally check external links with 4
 
 The below table describes the types of errors during checking links and examples of how to solve them:
 
-| Error        | Solution example   |
-|-------------|----------------|
-| `404 Not Found` | Page doesn't exist - you have to change the external link to the correct one |
-| Error with formatting link | Correct link or if link has a variables or it is a example, add this link to the `white-list-external` or `white-list-internal` |
-| `The specified file doesn't exist` | Change the relative path to the file to the correct one or use a absolute path (second solution is not recommended) |
-| `The specified header doesn't exist in file` | Change the anchor link in `.md` file to the correct one. Sometimes `milv` give a hint (`Did you mean about <similar header>?`) of which header (existing in the file) is very similar to the given. |
-| `The specified anchor doesn't exist...` or `The specified anchor doesn't exist in website...` | Check which anchors are on the external website and correct the specified anchor or remove the redirection to the given anchor. Sometimes `milv` give a hint (`Did you mean about <similar anchor>?`) of which anchor (existing in the website) is very similar to the given. |
-| `Get <external link>: net/http: request canceled (Client.Timeout exceeded while awaiting headers)` | Increase net timeout to the all files, specific file or specific link or increase times of request repeats ([Here's](#advanced-configuration) how to do it) |
-| `Get <external link>: EOF ` | Same as above or change the link to the other one (probably website doesn't exist) |
-| Other types of errors and errors with contains `no such host` or `timeout` words | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `white-list-external` or `white-list-internal` |
+| Error                                                                                              | Solution example                                                                                                                                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `404 Not Found`                                                                                    | Page doesn't exist - you have to change the external link to the correct one                                                                                                                                                                                                  |
+| Error with formatting link                                                                         | Correct link or if link has a variables or it is a example, add this link to the `white-list-external` or `white-list-internal`                                                                                                                                               |
+| `The specified file doesn't exist`                                                                 | Change the relative path to the file to the correct one or use a absolute path (second solution is not recommended)                                                                                                                                                           |
+| `The specified header doesn't exist in file`                                                       | Change the anchor link in `.md` file to the correct one. Sometimes `milv` give a hint (`Did you mean about <similar header>?`) of which header (existing in the file) is very similar to the given.                                                                           |
+| `The specified anchor doesn't exist...` or `The specified anchor doesn't exist in website...`      | Check which anchors are on the external website and correct the specified anchor or remove the redirection to the given anchor. Sometimes `milv` give a hint (`Did you mean about <similar anchor>?`) of which anchor (existing in the website) is very similar to the given. |
+| `Get <external link>: net/http: request canceled (Client.Timeout exceeded while awaiting headers)` | Increase net timeout to the all files, specific file or specific link or increase times of request repeats ([Here's](#advanced-configuration) how to do it)                                                                                                                   |
+| `Get <external link>: EOF `                                                                        | Same as above or change the link to the other one (probably website doesn't exist)                                                                                                                                                                                            |
+| Other types of errors and errors with contains `no such host` or `timeout` words                   | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `white-list-external` or `white-list-internal`                                                                |
 
 It is a good practice to add local or internal (in the local network) links to the global white list of external or internal links, such as `http://localhost`.
 
@@ -186,8 +188,8 @@ stage("validate internal & external links") {
 
 In opensource community is available other links validation libraries written in JS, Ruby and others languages. Here are a few of note:
 
-* [awesome_bot](https://github.com/dkhamsing/awesome_bot): validator written in Ruby. Allows for validation external and internal links in `.md` files.
-* [remark-validate-links](https://github.com/remarkjs/remark-validate-links): validator written in JS. Allows for validation internal links in `.md` files.
+- [awesome_bot](https://github.com/dkhamsing/awesome_bot): validator written in Ruby. Allows for validation external and internal links in `.md` files.
+- [remark-validate-links](https://github.com/remarkjs/remark-validate-links): validator written in JS. Allows for validation internal links in `.md` files.
 
 ## Contact
 
@@ -203,10 +205,10 @@ This project is available under the MIT license. See the [LICENSE](LICENSE) file
 
 ## ToDo
 
-* [ ] error handling 
-* [ ] refactor (new architecture)
-* [ ] documentations
-* [ ] possibility to validation remote repositories hosted on **GitHub**
-* [ ] parse other type of files
-* [x] add more commands like a: timeout for http.Get(), allow redirects or SSL
-* [ ] landing page for project
+- [ ] error handling
+- [ ] refactor (new architecture)
+- [ ] documentations
+- [ ] possibility to validation remote repositories hosted on **GitHub**
+- [ ] parse other type of files
+- [x] add more commands like a: timeout for http.Get(), allow redirects or SSL
+- [ ] landing page for project
