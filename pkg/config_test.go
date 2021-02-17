@@ -24,9 +24,9 @@ func TestConfig(t *testing.T) {
 					},
 				},
 			},
-			WhiteListExt: []string{"localhost", "abc.com"},
-			WhiteListInt: []string{"LICENSE"},
-			BlackList:    []string{"./README.md"},
+			ExternalLinksToIgnore: []string{"localhost", "abc.com"},
+			InternalLinksToIgnore: []string{"LICENSE"},
+			FilesToIgnore:         []string{"./README.md"},
 		}
 
 		result, err := NewConfig(commands)

@@ -4,6 +4,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Internal Links
 
-Link to `external_links.md` – [external_links.md](external_links.md)
+Link to `external_links.md` – [external_links.md](/external_links.md)
+Link to `external_links.md` – [external_links.md](./external_links.md)
 
 [Valid internal link](hash_internal_links.md)

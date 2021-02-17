@@ -5,6 +5,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 ## Links
 
 [../external_links.md](../external_links.md) – YourEmail@example.com
+[../external_links.md](./yaml.yaml) – YourEmail@example.com
 
 [sub_sub_path/without_links.md](sub_sub_path/without_links.md)
 

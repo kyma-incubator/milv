@@ -3,6 +3,8 @@ package pkg
 type FileConfig struct {
 	WhiteListExt    []string `yaml:"white-list-external"`
 	WhiteListInt    []string `yaml:"white-list-internal"`
+	BlackListExt    []string `yaml:"black-list-external"`
+	BlackListInt    []string `yaml:"black-list-internal"`
 	Timeout         *int     `yaml:"timeout"`
 	ReguestRepeats  *int8    `yaml:"request-repeats"`
 	AllowRedirect   *bool    `yaml:"allow-redirect"`
@@ -26,7 +28,7 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				if file.Config.Timeout != nil {
 					requestRepeats = file.Config.ReguestRepeats
 				} else {
-					requestRepeats = &config.ReguestRepeats
+					requestRepeats = &config.RequestRepeats
 				}
 
 				var allowRedirect, allowCodeBlocks, ignoreExternal, ignoreInternal *bool
@@ -52,8 +54,8 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				}
 
 				return &FileConfig{
-					WhiteListExt:    unique(append(config.WhiteListExt, file.Config.WhiteListExt...)),
-					WhiteListInt:    unique(append(config.WhiteListInt, file.Config.WhiteListInt...)),
+					WhiteListExt:    unique(append(config.ExternalLinksToIgnore, file.Config.WhiteListExt...)),
+					WhiteListInt:    unique(append(config.InternalLinksToIgnore, file.Config.WhiteListInt...)),
 					Timeout:         timeout,
 					ReguestRepeats:  requestRepeats,
 					AllowRedirect:   allowRedirect,
@@ -64,10 +66,10 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 			}
 		}
 		return &FileConfig{
-			WhiteListExt:    config.WhiteListExt,
-			WhiteListInt:    config.WhiteListInt,
+			WhiteListExt:    config.ExternalLinksToIgnore,
+			WhiteListInt:    config.InternalLinksToIgnore,
 			Timeout:         &config.Timeout,
-			ReguestRepeats:  &config.ReguestRepeats,
+			ReguestRepeats:  &config.RequestRepeats,
 			AllowRedirect:   &config.AllowRedirect,
 			AllowCodeBlocks: &config.AllowCodeBlocks,
 			IgnoreExternal:  &config.IgnoreExternal,

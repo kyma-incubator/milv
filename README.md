@@ -33,21 +33,21 @@ go build
 
 You can use the following parameters while using `milv` binary:
 
-| Name                 | Description                                             | Default Value      |
-| -------------------- | ------------------------------------------------------- | ------------------ |
-| `-base-path`         | root directory of repository                            | `""`               |
-| `-config-file`       | configuration file for bot. See [more](#config-file)    | `milv.config.yaml` |
-| `-white-list-ext`    | comma separate external links which will not be checked | `[]`               |
-| `-white-list-int`    | comma separate internal links which will not be checked | `[]`               |
-| `-black-list`        | comma separate files which will not be checked          | `[]`               |
-| `-allow-redirect`    | redirects will be allowed                               | `false`            |
-| `-request-repeats`   | number of request repeats                               | `1`                |
-| `-allow-code-blocks` | checking links in code blocks                           | `false`            |
-| `-timeout`           | connection timeout (in seconds)                         | `30`               |
-| `-ignore-external`   | ignore external links                                   | `false`            |
-| `-ignore-internal`   | ignore internal links                                   | `false`            |
-| `-v`                 | enable verbose logging                                  | `false`            |
-| `-help` or `-h`      | Show available parameters                               | n/a                |
+| Name                           | Description                                             | Default Value      |
+| ------------------------------ | ------------------------------------------------------- | ------------------ |
+| `-base-path`                   | root directory of repository                            | `""`               |
+| `-config-file`                 | configuration file for bot. See [more](#config-file)    | `milv.config.yaml` |
+| `-external-links-to-ignore`    | comma separate external links which will not be checked | `[]`               |
+| `-internal-links-to-ignore`    | comma separate internal links which will not be checked | `[]`               |
+| `-black-list`                  | comma separate files which will not be checked          | `[]`               |
+| `-allow-redirect`              | redirects will be allowed                               | `false`            |
+| `-request-repeats`             | number of request repeats                               | `1`                |
+| `-allow-code-blocks`           | checking links in code blocks                           | `false`            |
+| `-timeout`                     | connection timeout (in seconds)                         | `30`               |
+| `-ignore-external`             | ignore external links                                   | `false`            |
+| `-ignore-internal`             | ignore internal links                                   | `false`            |
+| `-v`                           | enable verbose logging                                  | `false`            |
+| `-help` or `-h`                |           Show available parameters                               | n/a                |
 
 Files to be checked are given as free parameters.
 
