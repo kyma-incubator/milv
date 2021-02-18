@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/magicmatatjahu/milv/cli"
-	milv "github.com/magicmatatjahu/milv/pkg"
+	"github.com/kyma-incubator/milv/cli"
+	milv "github.com/kyma-incubator/milv/pkg"
 )
 
 func main() {

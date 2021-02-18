@@ -9,20 +9,20 @@ import (
 )
 
 type Commands struct {
-	BasePath       string
-	ConfigFile     string
-	Files          []string
-	WhiteListExt   []string
-	WhiteListInt   []string
-	BlackList      []string
-	Timeout        int
-	ReguestRepeats int8
-	AllowRedirect bool
+	BasePath        string
+	ConfigFile      string
+	Files           []string
+	WhiteListExt    []string
+	WhiteListInt    []string
+	BlackList       []string
+	Timeout         int
+	ReguestRepeats  int8
+	AllowRedirect   bool
 	AllowCodeBlocks bool
-	IgnoreExternal bool
-	IgnoreInternal bool
-	Verbose        bool
-	FlagsSet       map[string]bool
+	IgnoreExternal  bool
+	IgnoreInternal  bool
+	Verbose         bool
+	FlagsSet        map[string]bool
 }
 
 func ParseCommands() Commands {
@@ -59,20 +59,20 @@ func ParseCommands() Commands {
 	}
 
 	return Commands{
-		BasePath:       *basePath,
-		ConfigFile:     *configFile,
-		Files:          files,
-		WhiteListExt:   strings.Split(*whiteListExt, ","),
-		WhiteListInt:   strings.Split(*whiteListInt, ","),
-		BlackList:      strings.Split(*blackList, ","),
-		Timeout:        *timeout,
-		ReguestRepeats: int8(*requestRepeats),
-		AllowRedirect:  *allowRedirect,
+		BasePath:        *basePath,
+		ConfigFile:      *configFile,
+		Files:           files,
+		WhiteListExt:    strings.Split(*whiteListExt, ","),
+		WhiteListInt:    strings.Split(*whiteListInt, ","),
+		BlackList:       strings.Split(*blackList, ","),
+		Timeout:         *timeout,
+		ReguestRepeats:  int8(*requestRepeats),
+		AllowRedirect:   *allowRedirect,
 		AllowCodeBlocks: *allowCodeBlocks,
-		IgnoreExternal: *ignoreExternal,
-		IgnoreInternal: *ignoreInternal,
-		Verbose:        *verbose,
-		FlagsSet:       flagset,
+		IgnoreExternal:  *ignoreExternal,
+		IgnoreInternal:  *ignoreInternal,
+		Verbose:         *verbose,
+		FlagsSet:        flagset,
 	}
 }
 

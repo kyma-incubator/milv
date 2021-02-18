@@ -7,7 +7,7 @@
 ## Installation
 
 ```bash
-$ go get -u -v github.com/magicmatatjahu/milv
+$ go get -u -v github.com/kyma-incubator/milv
 ```
 
 For the above command to work you must have [GoLang](https://golang.org/doc/install) installed
@@ -21,7 +21,7 @@ If you want run the code without installation, run the following commands to get
 For this operations you must have also installed package manager [Dep](https://github.com/golang/dep).
 
 ```bash
-git clone https://github.com/magicmatatjahu/milv.git
+git clone https://github.com/kyma-incubator/milv.git
 cd milv
 dep ensure
 go build
@@ -142,7 +142,7 @@ files:
       timeout: 30
       allow-code-blocks: false
     links:
-      - path: "https://github.com/magicmatatjahu/milv"
+      - path: "https://github.com/kyma-incubator/milv"
         config:
           timeout: 15
           allow-redirect: true
@@ -150,7 +150,7 @@ files:
 
 In this example we can see that `milv` will globally check external links with 45 seconds timeout, also won't allow redirect and will allow checking links in code snippets and default times of request repeats is set 5.
 
-`Milv` also allows to separately configurate files. Timeout in `./src/foo.md` file will be set to 30 seconds, links will be checking 3 times (if they will return error) and the links in code blocks won't be checked. However, a single link `https://github.com/magicmatatjahu/milv` will be checking with 15 seconds timeout with the possibility of redirection.
+`Milv` also allows to separately configurate files. Timeout in `./src/foo.md` file will be set to 30 seconds, links will be checking 3 times (if they will return error) and the links in code blocks won't be checked. However, a single link `https://github.com/kyma-incubator/milv` will be checking with 15 seconds timeout with the possibility of redirection.
 
 ## Troubleshooting links
 

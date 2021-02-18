@@ -2,13 +2,14 @@ package pkg
 
 import (
 	"fmt"
-	"github.com/schollz/closestmatch"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/schollz/closestmatch"
 )
 
 type Validation struct {
@@ -189,18 +190,8 @@ func (*Validation) hashInternalLink(link Link, headers Headers) (Link, error) {
 	if match := headerExists(link.RelPath, headers); match {
 		link.Result.Status = true
 	} else {
-		cm := closestmatch.New(headers, []int{4, 3, 5})
-		closestHeader := cm.Closest(link.RelPath)
-		closestHeader = strings.Replace(closestHeader, " ", "-", -1)
-		closestHeader = strings.ToLower(closestHeader)
-
 		link.Result.Status = false
 		link.Result.Message = "The specified header doesn't exist in file"
-		//if closestHeader != "" {
-		//	link.Result.Message = fmt.Sprintf("The specified header doesn't exist in file. Did you mean about #%s?", closestHeader)
-		//} else {
-		//	link.Result.Message = "The specified header doesn't exist in file"
-		//}
 	}
 	return link, nil
 }

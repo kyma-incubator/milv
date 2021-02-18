@@ -41,7 +41,7 @@ func NewLinkConfig(link Link, file *File) *LinkConfig {
 		return &LinkConfig{
 			Timeout:        file.Config.Timeout,
 			ReguestRepeats: file.Config.ReguestRepeats,
-			AllowRedirect:	file.Config.AllowRedirect,
+			AllowRedirect:  file.Config.AllowRedirect,
 		}
 	}
 	return nil

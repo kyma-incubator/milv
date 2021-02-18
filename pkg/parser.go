@@ -3,12 +3,13 @@ package pkg
 import (
 	"bufio"
 	"fmt"
-	"golang.org/x/net/html"
 	"io"
 	"log"
 	"path"
 	"regexp"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 type Parser struct{}

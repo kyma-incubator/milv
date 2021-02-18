@@ -1,14 +1,14 @@
 package pkg
 
 type FileConfig struct {
-	WhiteListExt   []string `yaml:"white-list-external"`
-	WhiteListInt   []string `yaml:"white-list-internal"`
-	Timeout        *int     `yaml:"timeout"`
-	ReguestRepeats *int8    `yaml:"request-repeats"`
-	AllowRedirect  *bool	`yaml:"allow-redirect"`
-	AllowCodeBlocks *bool 	`yaml:"allow-code-blocks"`
-	IgnoreExternal *bool    `yaml:"ignore-external"`
-	IgnoreInternal *bool    `yaml:"ignore-internal"`
+	WhiteListExt    []string `yaml:"white-list-external"`
+	WhiteListInt    []string `yaml:"white-list-internal"`
+	Timeout         *int     `yaml:"timeout"`
+	ReguestRepeats  *int8    `yaml:"request-repeats"`
+	AllowRedirect   *bool    `yaml:"allow-redirect"`
+	AllowCodeBlocks *bool    `yaml:"allow-code-blocks"`
+	IgnoreExternal  *bool    `yaml:"ignore-external"`
+	IgnoreInternal  *bool    `yaml:"ignore-internal"`
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
@@ -52,26 +52,26 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				}
 
 				return &FileConfig{
-					WhiteListExt:   unique(append(config.WhiteListExt, file.Config.WhiteListExt...)),
-					WhiteListInt:   unique(append(config.WhiteListInt, file.Config.WhiteListInt...)),
-					Timeout:        timeout,
-					ReguestRepeats: requestRepeats,
-					AllowRedirect:  allowRedirect,
+					WhiteListExt:    unique(append(config.WhiteListExt, file.Config.WhiteListExt...)),
+					WhiteListInt:    unique(append(config.WhiteListInt, file.Config.WhiteListInt...)),
+					Timeout:         timeout,
+					ReguestRepeats:  requestRepeats,
+					AllowRedirect:   allowRedirect,
 					AllowCodeBlocks: allowCodeBlocks,
-					IgnoreExternal: ignoreExternal,
-					IgnoreInternal: ignoreInternal,
+					IgnoreExternal:  ignoreExternal,
+					IgnoreInternal:  ignoreInternal,
 				}
 			}
 		}
 		return &FileConfig{
-			WhiteListExt:   config.WhiteListExt,
-			WhiteListInt:   config.WhiteListInt,
-			Timeout:        &config.Timeout,
-			ReguestRepeats: &config.ReguestRepeats,
-			AllowRedirect:  &config.AllowRedirect,
+			WhiteListExt:    config.WhiteListExt,
+			WhiteListInt:    config.WhiteListInt,
+			Timeout:         &config.Timeout,
+			ReguestRepeats:  &config.ReguestRepeats,
+			AllowRedirect:   &config.AllowRedirect,
 			AllowCodeBlocks: &config.AllowCodeBlocks,
-			IgnoreExternal: &config.IgnoreExternal,
-			IgnoreInternal: &config.IgnoreInternal,
+			IgnoreExternal:  &config.IgnoreExternal,
+			IgnoreInternal:  &config.IgnoreInternal,
 		}
 	}
 	return nil
