@@ -59,8 +59,8 @@ func (f *File) Run() {
 func (f *File) ExtractLinks() *File {
 	whiteListExt, whiteListInt := []string{}, []string{}
 	if f.Config != nil {
-		whiteListExt = f.Config.WhiteListExt
-		whiteListInt = f.Config.WhiteListInt
+		whiteListExt = f.Config.ExternalLinksToIgnore
+		whiteListInt = f.Config.InternalLinksToIgnore
 	}
 
 	content := f.Content

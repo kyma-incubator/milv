@@ -19,8 +19,8 @@ func TestConfig(t *testing.T) {
 				File{
 					RelPath: "./src/foo.md",
 					Config: &FileConfig{
-						WhiteListExt: []string{"github.com"},
-						WhiteListInt: []string{"#contributing"},
+						ExternalLinksToIgnore: []string{"github.com"},
+						InternalLinksToIgnore: []string{"#contributing"},
 					},
 				},
 			},

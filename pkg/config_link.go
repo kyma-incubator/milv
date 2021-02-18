@@ -21,7 +21,7 @@ func NewLinkConfig(link Link, file *File) *LinkConfig {
 				if linkFile.Config.RequestRepeats != nil {
 					requestRepeats = linkFile.Config.RequestRepeats
 				} else {
-					requestRepeats = file.Config.ReguestRepeats
+					requestRepeats = file.Config.RequestRepeats
 				}
 
 				var allowRedirect *bool
@@ -40,7 +40,7 @@ func NewLinkConfig(link Link, file *File) *LinkConfig {
 		}
 		return &LinkConfig{
 			Timeout:        file.Config.Timeout,
-			RequestRepeats: file.Config.ReguestRepeats,
+			RequestRepeats: file.Config.RequestRepeats,
 			AllowRedirect:  file.Config.AllowRedirect,
 		}
 	}
