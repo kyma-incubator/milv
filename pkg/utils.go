@@ -58,7 +58,7 @@ func unique(elements []string) []string {
 	return result
 }
 
-func removeBlackList(filePaths, blackList []string) []string {
+func removeFiles(filePaths, blackList []string) []string {
 	var newFilePaths []string
 	for _, file := range filePaths {
 		exists := false

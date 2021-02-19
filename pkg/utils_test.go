@@ -46,7 +46,7 @@ func TestUtils(t *testing.T) {
 		filePaths, blackList := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeBlackList(filePaths, blackList)
+		result := removeFiles(filePaths, blackList)
 
 		assert.Equal(t, expected, result)
 	})
@@ -55,7 +55,7 @@ func TestUtils(t *testing.T) {
 		filePaths, blackList := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeBlackList(filePaths, blackList)
+		result := removeFiles(filePaths, blackList)
 
 		assert.Equal(t, expected, result)
 	})

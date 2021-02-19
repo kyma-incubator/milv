@@ -139,6 +139,9 @@ func TestParser(t *testing.T) {
 	})
 
 	t.Run("Absolute Internal Path", func(t *testing.T) {
+		//TODO: we have to initialize this global variable, because in other case the test don't pass.
+		//This variable was initialized in `config_file_test.go` and such dependency should be removed
+		SetBasePath("test-markdowns", false)
 		dirPath := "test-markdowns/sub_path"
 		content, err := readMarkdown("test-markdowns/sub_path/absolute_path.md")
 		require.NoError(t, err)

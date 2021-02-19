@@ -8,4 +8,4 @@ Link to Twitter – [Twitter](https://twitter.com)
 
 Link to Github – [Github](https://github.com)
 
-Link to non exists domain - [Link](http://localhost:10000)
+Link to non exists domain - [Link](http://dont.exist.link.com)

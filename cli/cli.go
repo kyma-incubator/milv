@@ -49,12 +49,10 @@ func ParseCommands() Commands {
 
 	if *basePath != "" {
 		*configFile = fmt.Sprintf("%s/%s", *basePath, *configFile)
-	} else {
-		*basePath = "./"
 	}
+
 	if len(files) == 0 {
-		cmd := fmt.Sprintf(`find %s -name "*.md"`, *basePath)
-		out := runCmd(cmd, true)
+		out := runCmd("find . -name \"*.md\"", true)
 		files = strings.Split(string(out), "\n")
 		if len(files) > 0 {
 			files = files[:len(files)-1]
