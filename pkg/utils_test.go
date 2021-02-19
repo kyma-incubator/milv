@@ -42,20 +42,20 @@ func TestUtils(t *testing.T) {
 		assert.ElementsMatch(t, expected, result)
 	})
 
-	t.Run("Remove Files From Black List", func(t *testing.T) {
-		filePaths, blackList := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
+	t.Run("Remove Files From Ignore List", func(t *testing.T) {
+		filePaths, filesToIgnore := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeFiles(filePaths, blackList)
+		result := removeFiles(filePaths, filesToIgnore)
 
 		assert.Equal(t, expected, result)
 	})
 
 	t.Run("Remove Code Blocks", func(t *testing.T) {
-		filePaths, blackList := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
+		filePaths, filesToIgnore := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeFiles(filePaths, blackList)
+		result := removeFiles(filePaths, filesToIgnore)
 
 		assert.Equal(t, expected, result)
 	})

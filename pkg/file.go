@@ -57,10 +57,10 @@ func (f *File) Run() {
 }
 
 func (f *File) ExtractLinks() *File {
-	whiteListExt, whiteListInt := []string{}, []string{}
+	externalLinksToIgnore, internalLinksToIgnore := []string{}, []string{}
 	if f.Config != nil {
-		whiteListExt = f.Config.ExternalLinksToIgnore
-		whiteListInt = f.Config.InternalLinksToIgnore
+		externalLinksToIgnore = f.Config.ExternalLinksToIgnore
+		internalLinksToIgnore = f.Config.InternalLinksToIgnore
 	}
 
 	content := f.Content
@@ -71,7 +71,7 @@ func (f *File) ExtractLinks() *File {
 	f.Links = f.parser.
 		Links(content, f.DirPath).
 		AppendConfig(f).
-		RemoveWhiteLinks(whiteListExt, whiteListInt).
+		RemoveIgnoredLinks(externalLinksToIgnore, internalLinksToIgnore).
 		Filter(func(link Link) bool {
 			if f.Config != nil && f.Config.IgnoreInternal != nil && *f.Config.IgnoreInternal && (link.TypeOf == HashInternalLink || link.TypeOf == InternalLink) {
 				return false

@@ -7,8 +7,8 @@ import (
 )
 
 func TestLinks(t *testing.T) {
-	t.Run("Remove White Links", func(t *testing.T) {
-		whiteListExternal, whiteListInternal := []string{"github.com"}, []string{"../external_links.md"}
+	t.Run("Remove Ignored Links", func(t *testing.T) {
+		externalLinksToIgnore, interlaLinksToIgnore := []string{"github.com"}, []string{"../external_links.md"}
 		links := Links{
 			Link{
 				AbsPath: "https://twitter.com",
@@ -70,7 +70,7 @@ func TestLinks(t *testing.T) {
 			},
 		}
 
-		result := links.RemoveWhiteLinks(whiteListExternal, whiteListInternal)
+		result := links.RemoveIgnoredLinks(externalLinksToIgnore, interlaLinksToIgnore)
 		assert.Equal(t, expected, result)
 	})
 

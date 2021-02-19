@@ -9,20 +9,20 @@ import (
 )
 
 type Commands struct {
-	BasePath        string
-	ConfigFile      string
-	Files           []string
-	WhiteListExt    []string
-	WhiteListInt    []string
-	BlackList       []string
-	Timeout         int
-	ReguestRepeats  int8
-	AllowRedirect   bool
-	AllowCodeBlocks bool
-	IgnoreExternal  bool
-	IgnoreInternal  bool
-	Verbose         bool
-	FlagsSet        map[string]bool
+	BasePath              string
+	ConfigFile            string
+	Files                 []string
+	ExternalLinksToIgnore []string
+	InternalLinksToIgnore []string
+	FilesToIgnore         []string
+	Timeout               int
+	RequestRepeats        int8
+	AllowRedirect         bool
+	AllowCodeBlocks       bool
+	IgnoreExternal        bool
+	IgnoreInternal        bool
+	Verbose               bool
+	FlagsSet              map[string]bool
 }
 
 func ParseCommands() Commands {
@@ -60,20 +60,20 @@ func ParseCommands() Commands {
 	}
 
 	return Commands{
-		BasePath:        *basePath,
-		ConfigFile:      *configFile,
-		Files:           files,
-		WhiteListExt:    strings.Split(*whiteListExt, ","),
-		WhiteListInt:    strings.Split(*whiteListInt, ","),
-		BlackList:       strings.Split(*blackList, ","),
-		Timeout:         *timeout,
-		ReguestRepeats:  int8(*requestRepeats),
-		AllowRedirect:   *allowRedirect,
-		AllowCodeBlocks: *allowCodeBlocks,
-		IgnoreExternal:  *ignoreExternal,
-		IgnoreInternal:  *ignoreInternal,
-		Verbose:         *verbose,
-		FlagsSet:        flagset,
+		BasePath:              *basePath,
+		ConfigFile:            *configFile,
+		Files:                 files,
+		ExternalLinksToIgnore: strings.Split(*whiteListExt, ","),
+		InternalLinksToIgnore: strings.Split(*whiteListInt, ","),
+		FilesToIgnore:         strings.Split(*blackList, ","),
+		Timeout:               *timeout,
+		RequestRepeats:        int8(*requestRepeats),
+		AllowRedirect:         *allowRedirect,
+		AllowCodeBlocks:       *allowCodeBlocks,
+		IgnoreExternal:        *ignoreExternal,
+		IgnoreInternal:        *ignoreInternal,
+		Verbose:               *verbose,
+		FlagsSet:              flagset,
 	}
 }
 

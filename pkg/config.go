@@ -52,7 +52,7 @@ func (c *Config) combine(commands cli.Commands) *Config {
 
 	var requestRepeats int8
 	if commands.FlagsSet["request-repeats"] {
-		requestRepeats = commands.ReguestRepeats
+		requestRepeats = commands.RequestRepeats
 	} else {
 		requestRepeats = c.RequestRepeats
 	}
@@ -81,9 +81,9 @@ func (c *Config) combine(commands cli.Commands) *Config {
 
 	return &Config{
 		Files:                 c.Files,
-		ExternalLinksToIgnore: unique(append(c.ExternalLinksToIgnore, commands.WhiteListExt...)),
-		InternalLinksToIgnore: unique(append(c.InternalLinksToIgnore, commands.WhiteListInt...)),
-		FilesToIgnore:         unique(append(c.FilesToIgnore, commands.BlackList...)),
+		ExternalLinksToIgnore: unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
+		InternalLinksToIgnore: unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
+		FilesToIgnore:         unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
 		Timeout:               timeout,
 		RequestRepeats:        requestRepeats,
 		AllowRedirect:         allowRedirect,

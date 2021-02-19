@@ -58,12 +58,12 @@ func unique(elements []string) []string {
 	return result
 }
 
-func removeFiles(filePaths, blackList []string) []string {
+func removeFiles(filePaths, filesToIgnore []string) []string {
 	var newFilePaths []string
 	for _, file := range filePaths {
 		exists := false
-		for _, blackFile := range blackList {
-			if strings.Contains(file, blackFile) {
+		for _, fileToIgnore := range filesToIgnore {
+			if strings.Contains(file, fileToIgnore) {
 				exists = true
 				break
 			}
