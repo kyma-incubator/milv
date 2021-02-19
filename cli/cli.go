@@ -52,8 +52,6 @@ func ParseCommands() Commands {
 	}
 
 	if len(files) == 0 {
-		//TODO: according to docs, basePath is: The root source directories used to search for files
-		// In line below is bug, because we look for md files in current working dir not in basePath.
 		out := runCmd("find . -name \"*.md\"", true)
 		files = strings.Split(string(out), "\n")
 		if len(files) > 0 {
