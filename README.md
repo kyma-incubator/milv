@@ -39,7 +39,7 @@ You can use the following parameters while using `milv` binary:
 | `-config-file`                 | configuration file for bot. See [more](#config-file)    | `milv.config.yaml` |
 | `-external-links-to-ignore`    | comma separate external links which will not be checked | `[]`               |
 | `-internal-links-to-ignore`    | comma separate internal links which will not be checked | `[]`               |
-| `-black-list`                  | comma separate files which will not be checked          | `[]`               |
+| `-files-to-ignore`             | comma separate files which will not be checked          | `[]`               |
 | `-allow-redirect`              | redirects will be allowed                               | `false`            |
 | `-request-repeats`             | number of request repeats                               | `1`                |
 | `-allow-code-blocks`           | checking links in code blocks                           | `false`            |
@@ -56,7 +56,7 @@ Files to be checked are given as free parameters.
 - Checks all links, without matching `github.com` in external links, in `.md` files in current directory+subdirectories without files matching `vendor` in path:
 
 ```bash
-milv -black-list="vendor" -white-lis-ext="github.com"
+milv -files-to-ignore="vendor" -external-links-to-ignore="github.com"
 ```
 
 - Checks links only in `./README.md` and `./foo/bar.md` files:
@@ -99,23 +99,23 @@ If your tree of your project look like this:
 your config file can look like this:
 
 ```yaml
-white-list-external: ["localhost", "abc.com"]
-white-list-internal: ["LICENSE"]
-black-list: ["./README.md"]
+external-links-to-ignore: ["localhost", "abc.com"]
+internal-links-to-ignore: ["LICENSE"]
+files-to-ignore: ["./README.md"]
 files:
   - path: "./src/foo.md"
     config:
-      white-list-external: ["github.com"]
-      white-list-internal: ["#contributing"]
+      external-links-to-ignore: ["github.com"]
+      internal-links-to-ignore: ["#contributing"]
 ```
 
-Before run validation, `milv` remove from files list `./README.md` file to check and connect global `white-list-external` with file `white-list-external` and `white-list-external` for `./src/foo.md` file will look that:
+Before run validation, `milv` remove from files list `./README.md` file to check and connect global `external-links-to-ignore` with file `external-links-to-ignore` and `external-links-to-ignore` for `./src/foo.md` file will look that:
 
 ```yaml
-white-list-external: ["localhost", "abc.com", "github.com"]
+external-links-to-ignore: ["localhost", "abc.com", "github.com"]
 ```
 
-Similarly will be with `white-list-internal`.
+Similarly will be with `internal-links-to-ignore`.
 
 If you have a config file and you use a `CLI`, then `milv` will automatically combine the parameters from file and consol.
 
@@ -126,9 +126,9 @@ If you have a config file and you use a `CLI`, then `milv` will automatically co
 Config file can look like this:
 
 ```yaml
-white-list-external: ["localhost", "abc.com"]
-white-list-internal: ["LICENSE"]
-black-list: ["./README.md"]
+external-links-to-ignore: ["localhost", "abc.com"]
+internal-links-to-ignore: ["LICENSE"]
+files-to-ignore: ["./README.md"]
 request-repeats: 5
 timeout: 45
 allow-redirect: false
@@ -136,8 +136,8 @@ allow-code-blocks: true
 files:
   - path: "./src/foo.md"
     config:
-      white-list-external: ["google.com"]
-      white-list-internal: ["#contributing"]
+      external-links-to-ignore: ["google.com"]
+      internal-links-to-ignore: ["#contributing"]
       request-repeats: 3
       timeout: 30
       allow-code-blocks: false
@@ -159,15 +159,15 @@ The below table describes the types of errors during checking links and examples
 | Error                                                                                              | Solution example                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `404 Not Found`                                                                                    | Page doesn't exist - you have to change the external link to the correct one                                                                                                                                                                                                  |
-| Error with formatting link                                                                         | Correct link or if link has a variables or it is a example, add this link to the `white-list-external` or `white-list-internal`                                                                                                                                               |
+| Error with formatting link                                                                         | Correct link or if link has a variables or it is a example, add this link to the `external-links-to-ignore` or `internal-links-to-ignore`                                                                                                                                               |
 | `The specified file doesn't exist`                                                                 | Change the relative path to the file to the correct one or use a absolute path (second solution is not recommended)                                                                                                                                                           |
 | `The specified header doesn't exist in file`                                                       | Change the anchor link in `.md` file to the correct one. Sometimes `milv` give a hint (`Did you mean about <similar header>?`) of which header (existing in the file) is very similar to the given.                                                                           |
 | `The specified anchor doesn't exist...` or `The specified anchor doesn't exist in website...`      | Check which anchors are on the external website and correct the specified anchor or remove the redirection to the given anchor. Sometimes `milv` give a hint (`Did you mean about <similar anchor>?`) of which anchor (existing in the website) is very similar to the given. |
 | `Get <external link>: net/http: request canceled (Client.Timeout exceeded while awaiting headers)` | Increase net timeout to the all files, specific file or specific link or increase times of request repeats ([Here's](#advanced-configuration) how to do it)                                                                                                                   |
 | `Get <external link>: EOF `                                                                        | Same as above or change the link to the other one (probably website doesn't exist)                                                                                                                                                                                            |
-| Other types of errors and errors with contains `no such host` or `timeout` words                   | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `white-list-external` or `white-list-internal`                                                                |
+| Other types of errors and errors with contains `no such host` or `timeout` words                   | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `external-links-to-ignore` or `internal-links-to-ignore`                                                                |
 
-It is a good practice to add local or internal (in the local network) links to the global white list of external or internal links, such as `http://localhost`.
+It is a good practice to add local or internal (in the local network) links to the global ignore list of external or internal links, such as `http://localhost`.
 
 ## Validate Pull Requests
 
