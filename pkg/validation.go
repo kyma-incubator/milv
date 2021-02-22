@@ -143,9 +143,6 @@ func (*Validation) externalLink(link Link) (Link, error) {
 						message = "The specified anchor doesn't exist"
 					}
 				}
-			} else if resp.StatusCode == http.StatusTooManyRequests {
-				fmt.Println("Backoff!")
-				time.Sleep(time.Second * 1)
 			}
 
 			resp.Body.Close()
