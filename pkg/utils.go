@@ -58,7 +58,7 @@ func unique(elements []string) []string {
 	return result
 }
 
-func removeFiles(filePaths, filesToIgnore []string) []string {
+func removeIgnoredFiles(filePaths, filesToIgnore []string) []string {
 	var newFilePaths []string
 	for _, file := range filePaths {
 		exists := false

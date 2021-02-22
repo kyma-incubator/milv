@@ -17,13 +17,14 @@ type Parser struct{}
 type match func([][]string) string
 
 const (
-	//catch group: text and link or catch URL
+	// this regex catch 2 things, markdown URL or normal URL
+	// markdown url consists of 2 groups: [text](url)
 	linkPattern   = `\[([^\]]*)\]\(([^)]*)\)|\bhttps?://\S*\b`
 	headerPattern = `^#{1,6}? (.*)`
 	httpsPattern  = `^https?://`
 	hashPattern   = `^#(.*)`
 
-	secondCaughtGroup = 2
+	urlCatchGroup = 2
 )
 
 func (p *Parser) Links(markdown, dirPath string) Links {
@@ -70,7 +71,7 @@ func (*Parser) parse(markdown, pattern string, match match) []string {
 }
 
 func (*Parser) getLink(matches [][]string) string {
-	substring := strings.Split(matches[0][secondCaughtGroup], " ")[0]
+	substring := strings.Split(matches[0][urlCatchGroup], " ")[0]
 	if substring == "" {
 		return matches[0][0]
 	}

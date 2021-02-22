@@ -46,7 +46,7 @@ func TestUtils(t *testing.T) {
 		filePaths, filesToIgnore := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeFiles(filePaths, filesToIgnore)
+		result := removeIgnoredFiles(filePaths, filesToIgnore)
 
 		assert.Equal(t, expected, result)
 	})
@@ -55,7 +55,7 @@ func TestUtils(t *testing.T) {
 		filePaths, filesToIgnore := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
 
 		expected := []string{"./abc.md"}
-		result := removeFiles(filePaths, filesToIgnore)
+		result := removeIgnoredFiles(filePaths, filesToIgnore)
 
 		assert.Equal(t, expected, result)
 	})

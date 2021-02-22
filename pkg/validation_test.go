@@ -7,8 +7,7 @@ import (
 )
 
 func TestValidation(t *testing.T) {
-	//TODO: should we mock those services?
-	//It's strange that we call external apis in unit tests
+	//TODO: should we mock those external services?
 	t.Run("External Links", func(t *testing.T) {
 		t.Skip("Temporarily skipped because not existing host case doesn't work")
 		links := []Link{

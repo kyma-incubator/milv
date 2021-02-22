@@ -5,7 +5,7 @@ type Files []*File
 func NewFiles(filePaths []string, config *Config) (Files, error) {
 	var files Files
 
-	filePaths = removeFiles(filePaths, config.FilesToIgnore)
+	filePaths = removeIgnoredFiles(filePaths, config.FilesToIgnore)
 	for _, filePath := range filePaths {
 		file, err := NewFile(filePath, NewLinks(filePath, config), NewFileConfig(filePath, config))
 		if err != nil {
