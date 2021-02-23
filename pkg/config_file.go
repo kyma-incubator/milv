@@ -3,8 +3,6 @@ package pkg
 type FileConfig struct {
 	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
 	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
-	ExternalFilesToIgnore []string `yaml:"external-files-to-ignore"`
-	InternalFilesToIgnore []string `yaml:"internal-files-to-ignore"`
 	Timeout               *int     `yaml:"timeout"`
 	RequestRepeats        *int8    `yaml:"request-repeats"`
 	AllowRedirect         *bool    `yaml:"allow-redirect"`

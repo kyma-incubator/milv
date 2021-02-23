@@ -15,14 +15,13 @@ func TestConfig(t *testing.T) {
 		}
 
 		expected := &Config{
-			Files: []File{
-				File{
-					RelPath: "./src/foo.md",
-					Config: &FileConfig{
-						ExternalLinksToIgnore: []string{"github.com"},
-						InternalLinksToIgnore: []string{"#contributing"},
-					},
+			Files: []File{{
+				RelPath: "./src/foo.md",
+				Config: &FileConfig{
+					ExternalLinksToIgnore: []string{"github.com"},
+					InternalLinksToIgnore: []string{"#contributing"},
 				},
+			},
 			},
 			ExternalLinksToIgnore: []string{"localhost", "abc.com"},
 			InternalLinksToIgnore: []string{"LICENSE"},
@@ -32,6 +31,9 @@ func TestConfig(t *testing.T) {
 		result, err := NewConfig(commands)
 
 		require.NoError(t, err)
-		assert.Equal(t, expected, result)
+		assert.Equal(t, expected.Files, result.Files)
+		assert.ElementsMatch(t, expected.ExternalLinksToIgnore, result.ExternalLinksToIgnore)
+		assert.ElementsMatch(t, expected.InternalLinksToIgnore, result.InternalLinksToIgnore)
+		assert.ElementsMatch(t, expected.FilesToIgnore, result.FilesToIgnore)
 	})
 }
