@@ -47,7 +47,7 @@ You can use the following parameters while using `milv` binary:
 | `-ignore-external`             | ignore external links                                   | `false`            |
 | `-ignore-internal`             | ignore internal links                                   | `false`            |
 | `-v`                           | enable verbose logging                                  | `false`            |
-| `-help` or `-h`                |           Show available parameters                               | n/a                |
+| `-help` or `-h`                | show available parameters                               | n/a                |
 
 Files to be checked are given as free parameters.
 
