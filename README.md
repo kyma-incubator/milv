@@ -35,19 +35,19 @@ You can use the following parameters while using `milv` binary:
 
 | Name                           | Description                                             | Default Value      |
 | ------------------------------ | ------------------------------------------------------- | ------------------ |
-| `-base-path`                   | root directory of repository                            | `""`               |
-| `-config-file`                 | configuration file for bot. See [more](#config-file)    | `milv.config.yaml` |
-| `-external-links-to-ignore`    | comma separate external links which will not be checked | `[]`               |
-| `-internal-links-to-ignore`    | comma separate internal links which will not be checked | `[]`               |
-| `-files-to-ignore`             | comma separate files which will not be checked          | `[]`               |
-| `-allow-redirect`              | redirects will be allowed                               | `false`            |
-| `-request-repeats`             | number of request repeats                               | `1`                |
-| `-allow-code-blocks`           | checking links in code blocks                           | `false`            |
-| `-timeout`                     | connection timeout (in seconds)                         | `30`               |
-| `-ignore-external`             | ignore external links                                   | `false`            |
-| `-ignore-internal`             | ignore internal links                                   | `false`            |
-| `-v`                           | enable verbose logging                                  | `false`            |
-| `-help` or `-h`                | show available parameters                               | n/a                |
+| `-base-path`                   | Root directory of the repository                            | `""`               |
+| `-config-file`                 | Configuration file for the bot. See the [**Config file**](#config-file) section for more details.  | `milv.config.yaml` |
+| `-external-links-to-ignore`    | Comma-separated external links which will not be checked | `[]`               |
+| `-internal-links-to-ignore`    | Comma-separated internal links which will not be checked | `[]`               |
+| `-files-to-ignore`             | Comma-separated files which will not be checked          | `[]`               |
+| `-allow-redirect`              | Redirects will be allowed                               | `false`            |
+| `-request-repeats`             | Number of repeated request                               | `1`                |
+| `-allow-code-blocks`           | Links in code blocks will be checked                          | `false`            |
+| `-timeout`                     | Connection timeout (in seconds)                         | `30`               |
+| `-ignore-external`             | External links to be ignored                                  | `false`            |
+| `-ignore-internal`             | Internal links to be ignored                                   | `false`            |
+| `-v`                           | Verbose logging                                  | `false`            |
+| `-help` or `-h`                | Available parameters                               | n/a                |
 
 Files to be checked are given as free parameters.
 
@@ -109,7 +109,7 @@ files:
       internal-links-to-ignore: ["#contributing"]
 ```
 
-Before run validation, `milv` remove from files list `./README.md` file to check and connect global `external-links-to-ignore` with file `external-links-to-ignore` and `external-links-to-ignore` for `./src/foo.md` file will look that:
+Before running the validation, `milv` removes the `./README.md` file from the files list. It then concatenates the values for `external-links-to-ignore` entries. For the `./src/foo.md` file mentioned in the example, the result will look as follows:
 
 ```yaml
 external-links-to-ignore: ["localhost", "abc.com", "github.com"]
@@ -159,13 +159,13 @@ The below table describes the types of errors during checking links and examples
 | Error                                                                                              | Solution example                                                                                                                                                                                                                                                              |
 | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `404 Not Found`                                                                                    | Page doesn't exist - you have to change the external link to the correct one                                                                                                                                                                                                  |
-| Error with formatting link                                                                         | Correct link or if link has a variables or it is a example, add this link to the `external-links-to-ignore` or `internal-links-to-ignore`                                                                                                                                               |
+| Error with formatting the link                                                                         | Correct the link. If the link contains variables or is used as an example, add it to the `external-links-to-ignore` or `internal-links-to-ignore` list.                                                                                                                                              |
 | `The specified file doesn't exist`                                                                 | Change the relative path to the file to the correct one or use a absolute path (second solution is not recommended)                                                                                                                                                           |
 | `The specified header doesn't exist in file`                                                       | Change the anchor link in `.md` file to the correct one. Sometimes `milv` give a hint (`Did you mean about <similar header>?`) of which header (existing in the file) is very similar to the given.                                                                           |
 | `The specified anchor doesn't exist...` or `The specified anchor doesn't exist in website...`      | Check which anchors are on the external website and correct the specified anchor or remove the redirection to the given anchor. Sometimes `milv` give a hint (`Did you mean about <similar anchor>?`) of which anchor (existing in the website) is very similar to the given. |
 | `Get <external link>: net/http: request canceled (Client.Timeout exceeded while awaiting headers)` | Increase net timeout to the all files, specific file or specific link or increase times of request repeats ([Here's](#advanced-configuration) how to do it)                                                                                                                   |
 | `Get <external link>: EOF `                                                                        | Same as above or change the link to the other one (probably website doesn't exist)                                                                                                                                                                                            |
-| Other types of errors and errors with contains `no such host` or `timeout` words                   | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `external-links-to-ignore` or `internal-links-to-ignore`                                                                |
+| Other types of errors and errors that contain the `no such host` or `timeout` words                   | It means that the website doesn't exist or you don't have access to it. You can change the link to another one, correct or remove it, or add it to the `external-links-to-ignore` or `internal-links-to-ignore` list.                                                               |
 
 It is a good practice to add local or internal (in the local network) links to the global ignore list of external or internal links, such as `http://localhost`.
 
