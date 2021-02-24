@@ -39,6 +39,7 @@ tidy:
 test:
 	go test ./...
 
+.PHONY: build
 build:
 	go build -o milv main.go
 
