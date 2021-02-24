@@ -75,6 +75,34 @@ func removeIgnoredFiles(filePaths, filesToIgnore []string) []string {
 	return newFilePaths
 }
 
+func markFilesToIgnoreInternalLinks(files Files, filesToIgnoreInternalLinksIn []string) Files {
+
+	for _, file := range files {
+		for _, fileToIgnoreInternalLinkIn := range filesToIgnoreInternalLinksIn {
+			if isFile(fileToIgnoreInternalLinkIn) {
+				if file.DirPath == fileToIgnoreInternalLinkIn {
+					var enable = true
+					file.Config.IgnoreInternal = &enable
+				}
+			} else {
+				if strings.Contains(file.DirPath, fileToIgnoreInternalLinkIn) {
+					var enable = true
+					file.Config.IgnoreInternal = &enable
+				}
+			}
+		}
+	}
+	return files
+}
+
+func isFile(pathToCheck string) bool {
+	filePath := filepath.Dir(pathToCheck)
+	if filePath == "." {
+		return false
+	}
+	return true
+}
+
 func readMarkdown(filePath string) (string, error) {
 	content, err := ioutil.ReadFile(filePath)
 	if err != nil {

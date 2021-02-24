@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"io/ioutil"
+	"path"
 
 	"gopkg.in/yaml.v2"
 
@@ -9,16 +10,17 @@ import (
 )
 
 type Config struct {
-	Files                 []File   `yaml:"files"`
-	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
-	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
-	FilesToIgnore         []string `yaml:"files-to-ignore"`
-	Timeout               int      `yaml:"timeout"`
-	RequestRepeats        int8     `yaml:"request-repeats"`
-	AllowRedirect         bool     `yaml:"allow-redirect"`
-	AllowCodeBlocks       bool     `yaml:"allow-code-blocks"`
-	IgnoreExternal        bool     `yaml:"ignore-external"`
-	IgnoreInternal        bool     `yaml:"ignore-internal"`
+	Files                        []File   `yaml:"files"`
+	ExternalLinksToIgnore        []string `yaml:"external-links-to-ignore"`
+	InternalLinksToIgnore        []string `yaml:"internal-links-to-ignore"`
+	FilesToIgnore                []string `yaml:"files-to-ignore"`
+	FilesToIgnoreInternalLinksIn []string `yaml:"files-to-ignore-internal-links-in"`
+	Timeout                      int      `yaml:"timeout"`
+	RequestRepeats               int8     `yaml:"request-repeats"`
+	AllowRedirect                bool     `yaml:"allow-redirect"`
+	AllowCodeBlocks              bool     `yaml:"allow-code-blocks"`
+	IgnoreExternal               bool     `yaml:"ignore-external"`
+	IgnoreInternal               bool     `yaml:"ignore-internal"`
 }
 
 func NewConfig(commands cli.Commands) (*Config, error) {
@@ -80,15 +82,26 @@ func (c *Config) combine(commands cli.Commands) *Config {
 	}
 
 	return &Config{
-		Files:                 c.Files,
-		ExternalLinksToIgnore: unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
-		InternalLinksToIgnore: unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
-		FilesToIgnore:         unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
-		Timeout:               timeout,
-		RequestRepeats:        requestRepeats,
-		AllowRedirect:         allowRedirect,
-		AllowCodeBlocks:       allowCodeBlocks,
-		IgnoreExternal:        ignoreExternal,
-		IgnoreInternal:        ignoreInternal,
+		Files:                        c.Files,
+		ExternalLinksToIgnore:        unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
+		InternalLinksToIgnore:        unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
+		FilesToIgnoreInternalLinksIn: unique(append(cleanPaths(c.FilesToIgnoreInternalLinksIn), cleanPaths(commands.FilesToIgnoreInternalLinksIn)...)),
+		FilesToIgnore:                unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
+		Timeout:                      timeout,
+		RequestRepeats:               requestRepeats,
+		AllowRedirect:                allowRedirect,
+		AllowCodeBlocks:              allowCodeBlocks,
+		IgnoreExternal:               ignoreExternal,
+		IgnoreInternal:               ignoreInternal,
 	}
+}
+
+func cleanPaths(inputPaths []string) []string {
+	var cleanPaths []string
+	for _, inputPath := range inputPaths {
+		cleanPath := path.Clean(inputPath)
+		cleanPaths = append(cleanPaths, cleanPath)
+	}
+
+	return cleanPaths
 }
