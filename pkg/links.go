@@ -26,7 +26,7 @@ func (l Links) AppendConfig(file *File) Links {
 	return links
 }
 
-func (l Links) RemoveWhiteLinks(externals, internals []string) Links {
+func (l Links) RemoveIgnoredLinks(externals, internals []string) Links {
 	links := l[:0]
 	exist := false
 

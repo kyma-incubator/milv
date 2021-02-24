@@ -17,8 +17,8 @@ func TestConfigFile(t *testing.T) {
 		}
 
 		expected := &FileConfig{
-			WhiteListExt: []string{"localhost", "abc.com", "github.com"},
-			WhiteListInt: []string{"LICENSE", "#contributing"},
+			ExternalLinksToIgnore: []string{"localhost", "abc.com", "github.com"},
+			InternalLinksToIgnore: []string{"LICENSE", "#contributing"},
 		}
 
 		config, err := NewConfig(commands)
@@ -27,7 +27,7 @@ func TestConfigFile(t *testing.T) {
 		result := NewFileConfig("./src/foo.md", config)
 
 		require.NoError(t, err)
-		assert.ElementsMatch(t, expected.WhiteListExt, result.WhiteListExt)
-		assert.ElementsMatch(t, expected.WhiteListInt, result.WhiteListInt)
+		assert.ElementsMatch(t, expected.ExternalLinksToIgnore, result.ExternalLinksToIgnore)
+		assert.ElementsMatch(t, expected.InternalLinksToIgnore, result.InternalLinksToIgnore)
 	})
 }

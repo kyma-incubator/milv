@@ -39,6 +39,10 @@ tidy:
 test:
 	go test ./...
 
+.PHONY: build
+build:
+	go build -o milv main.go
+
 VERIFY_IGNORE := /vendor\|/automock
 FILES_TO_CHECK = find . -type f -name "*.go" | grep -v "$(VERIFY_IGNORE)"
 .PHONY: check-fmt

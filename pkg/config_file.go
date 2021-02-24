@@ -1,14 +1,14 @@
 package pkg
 
 type FileConfig struct {
-	WhiteListExt    []string `yaml:"white-list-external"`
-	WhiteListInt    []string `yaml:"white-list-internal"`
-	Timeout         *int     `yaml:"timeout"`
-	ReguestRepeats  *int8    `yaml:"request-repeats"`
-	AllowRedirect   *bool    `yaml:"allow-redirect"`
-	AllowCodeBlocks *bool    `yaml:"allow-code-blocks"`
-	IgnoreExternal  *bool    `yaml:"ignore-external"`
-	IgnoreInternal  *bool    `yaml:"ignore-internal"`
+	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
+	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
+	Timeout               *int     `yaml:"timeout"`
+	RequestRepeats        *int8    `yaml:"request-repeats"`
+	AllowRedirect         *bool    `yaml:"allow-redirect"`
+	AllowCodeBlocks       *bool    `yaml:"allow-code-blocks"`
+	IgnoreExternal        *bool    `yaml:"ignore-external"`
+	IgnoreInternal        *bool    `yaml:"ignore-internal"`
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
@@ -24,9 +24,9 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 
 				var requestRepeats *int8
 				if file.Config.Timeout != nil {
-					requestRepeats = file.Config.ReguestRepeats
+					requestRepeats = file.Config.RequestRepeats
 				} else {
-					requestRepeats = &config.ReguestRepeats
+					requestRepeats = &config.RequestRepeats
 				}
 
 				var allowRedirect, allowCodeBlocks, ignoreExternal, ignoreInternal *bool
@@ -52,26 +52,26 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				}
 
 				return &FileConfig{
-					WhiteListExt:    unique(append(config.WhiteListExt, file.Config.WhiteListExt...)),
-					WhiteListInt:    unique(append(config.WhiteListInt, file.Config.WhiteListInt...)),
-					Timeout:         timeout,
-					ReguestRepeats:  requestRepeats,
-					AllowRedirect:   allowRedirect,
-					AllowCodeBlocks: allowCodeBlocks,
-					IgnoreExternal:  ignoreExternal,
-					IgnoreInternal:  ignoreInternal,
+					ExternalLinksToIgnore: unique(append(config.ExternalLinksToIgnore, file.Config.ExternalLinksToIgnore...)),
+					InternalLinksToIgnore: unique(append(config.InternalLinksToIgnore, file.Config.InternalLinksToIgnore...)),
+					Timeout:               timeout,
+					RequestRepeats:        requestRepeats,
+					AllowRedirect:         allowRedirect,
+					AllowCodeBlocks:       allowCodeBlocks,
+					IgnoreExternal:        ignoreExternal,
+					IgnoreInternal:        ignoreInternal,
 				}
 			}
 		}
 		return &FileConfig{
-			WhiteListExt:    config.WhiteListExt,
-			WhiteListInt:    config.WhiteListInt,
-			Timeout:         &config.Timeout,
-			ReguestRepeats:  &config.ReguestRepeats,
-			AllowRedirect:   &config.AllowRedirect,
-			AllowCodeBlocks: &config.AllowCodeBlocks,
-			IgnoreExternal:  &config.IgnoreExternal,
-			IgnoreInternal:  &config.IgnoreInternal,
+			ExternalLinksToIgnore: config.ExternalLinksToIgnore,
+			InternalLinksToIgnore: config.InternalLinksToIgnore,
+			Timeout:               &config.Timeout,
+			RequestRepeats:        &config.RequestRepeats,
+			AllowRedirect:         &config.AllowRedirect,
+			AllowCodeBlocks:       &config.AllowCodeBlocks,
+			IgnoreExternal:        &config.IgnoreExternal,
+			IgnoreInternal:        &config.IgnoreInternal,
 		}
 	}
 	return nil

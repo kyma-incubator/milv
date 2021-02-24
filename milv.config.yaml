@@ -1,14 +1,14 @@
-white-list-external: ["localhost"]
-black-list: ["/vendor/", "test-markdowns"]
+external-links-to-ignore: ["localhost"]
+files-to-ignore: ["/vendor/", "test-markdowns"]
 files:
   - path: "./milv/README.md"
     config:
       allow-code-blocks: true
   - path: "./milv/.github/ISSUE_TEMPLATE/security-vulnerability.md"
     config:
-      white-list-internal: ["{CVSS"]
+      internal-links-to-ignore: ["{CVSS"]
       #milv doesn't support that mysterious anchor
-      white-list-external:
+      external-links-to-ignore:
         [
           "https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N",
         ]

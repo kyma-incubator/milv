@@ -9,28 +9,28 @@ import (
 )
 
 type Commands struct {
-	BasePath        string
-	ConfigFile      string
-	Files           []string
-	WhiteListExt    []string
-	WhiteListInt    []string
-	BlackList       []string
-	Timeout         int
-	ReguestRepeats  int8
-	AllowRedirect   bool
-	AllowCodeBlocks bool
-	IgnoreExternal  bool
-	IgnoreInternal  bool
-	Verbose         bool
-	FlagsSet        map[string]bool
+	BasePath              string
+	ConfigFile            string
+	Files                 []string
+	ExternalLinksToIgnore []string
+	InternalLinksToIgnore []string
+	FilesToIgnore         []string
+	Timeout               int
+	RequestRepeats        int8
+	AllowRedirect         bool
+	AllowCodeBlocks       bool
+	IgnoreExternal        bool
+	IgnoreInternal        bool
+	Verbose               bool
+	FlagsSet              map[string]bool
 }
 
 func ParseCommands() Commands {
 	basePath := flag.String("base-path", "", "The root source directories used to search for files")
 	configFile := flag.String("config-file", "milv.config.yaml", "The config file for bot")
-	whiteListExt := flag.String("white-list-ext", "", "The white list external links")
-	whiteListInt := flag.String("white-list-int", "", "The white list internal links")
-	blackList := flag.String("black-list", "", "The files black list")
+	externalLinksToIgnore := flag.String("external-links-to-ignore", "", "The list of external links to ignore")
+	internalLinksToIgnore := flag.String("internal-links-to-ignore", "", "The list of internal links to ignore")
+	filesToIgnore := flag.String("files-to-ignore", "", "The files to ignore")
 	timeout := flag.Int("timeout", 0, "Timeout for http.get reguest")
 	requestRepeats := flag.Int("request-repeats", 0, "Times reguest failuring links")
 	allowRedirect := flag.Bool("allow-redirect", false, "Allow redirect")
@@ -50,6 +50,7 @@ func ParseCommands() Commands {
 	if *basePath != "" {
 		*configFile = fmt.Sprintf("%s/%s", *basePath, *configFile)
 	}
+
 	if len(files) == 0 {
 		out := runCmd("find . -name \"*.md\"", true)
 		files = strings.Split(string(out), "\n")
@@ -59,20 +60,20 @@ func ParseCommands() Commands {
 	}
 
 	return Commands{
-		BasePath:        *basePath,
-		ConfigFile:      *configFile,
-		Files:           files,
-		WhiteListExt:    strings.Split(*whiteListExt, ","),
-		WhiteListInt:    strings.Split(*whiteListInt, ","),
-		BlackList:       strings.Split(*blackList, ","),
-		Timeout:         *timeout,
-		ReguestRepeats:  int8(*requestRepeats),
-		AllowRedirect:   *allowRedirect,
-		AllowCodeBlocks: *allowCodeBlocks,
-		IgnoreExternal:  *ignoreExternal,
-		IgnoreInternal:  *ignoreInternal,
-		Verbose:         *verbose,
-		FlagsSet:        flagset,
+		BasePath:              *basePath,
+		ConfigFile:            *configFile,
+		Files:                 files,
+		ExternalLinksToIgnore: strings.Split(*externalLinksToIgnore, ","),
+		InternalLinksToIgnore: strings.Split(*internalLinksToIgnore, ","),
+		FilesToIgnore:         strings.Split(*filesToIgnore, ","),
+		Timeout:               *timeout,
+		RequestRepeats:        int8(*requestRepeats),
+		AllowRedirect:         *allowRedirect,
+		AllowCodeBlocks:       *allowCodeBlocks,
+		IgnoreExternal:        *ignoreExternal,
+		IgnoreInternal:        *ignoreInternal,
+		Verbose:               *verbose,
+		FlagsSet:              flagset,
 	}
 }
 
@@ -81,7 +82,6 @@ func runCmd(cmd string, shell bool) []byte {
 		out, err := exec.Command("/bin/bash", "-c", cmd).Output()
 		if err != nil {
 			log.Fatal(err)
-			panic("some error found")
 		}
 		return out
 	}

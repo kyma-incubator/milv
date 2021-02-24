@@ -2,7 +2,7 @@ package pkg
 
 type LinkConfig struct {
 	Timeout        *int  `yaml:"timeout"`
-	ReguestRepeats *int8 `yaml:"request-repeats"`
+	RequestRepeats *int8 `yaml:"request-repeats"`
 	AllowRedirect  *bool `yaml:"allow-redirect"`
 }
 
@@ -18,10 +18,10 @@ func NewLinkConfig(link Link, file *File) *LinkConfig {
 				}
 
 				var requestRepeats *int8
-				if linkFile.Config.ReguestRepeats != nil {
-					requestRepeats = linkFile.Config.ReguestRepeats
+				if linkFile.Config.RequestRepeats != nil {
+					requestRepeats = linkFile.Config.RequestRepeats
 				} else {
-					requestRepeats = file.Config.ReguestRepeats
+					requestRepeats = file.Config.RequestRepeats
 				}
 
 				var allowRedirect *bool
@@ -33,14 +33,14 @@ func NewLinkConfig(link Link, file *File) *LinkConfig {
 
 				return &LinkConfig{
 					Timeout:        timeout,
-					ReguestRepeats: requestRepeats,
+					RequestRepeats: requestRepeats,
 					AllowRedirect:  allowRedirect,
 				}
 			}
 		}
 		return &LinkConfig{
 			Timeout:        file.Config.Timeout,
-			ReguestRepeats: file.Config.ReguestRepeats,
+			RequestRepeats: file.Config.RequestRepeats,
 			AllowRedirect:  file.Config.AllowRedirect,
 		}
 	}

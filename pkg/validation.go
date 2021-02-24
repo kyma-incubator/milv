@@ -96,8 +96,8 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	}
 
 	requestRepeats := int8(1)
-	if link.Config != nil && link.Config.ReguestRepeats != nil && *link.Config.ReguestRepeats > 0 {
-		requestRepeats = *link.Config.ReguestRepeats
+	if link.Config != nil && link.Config.RequestRepeats != nil && *link.Config.RequestRepeats > 0 {
+		requestRepeats = *link.Config.RequestRepeats
 	}
 
 	for i := int8(0); i < requestRepeats; i++ {

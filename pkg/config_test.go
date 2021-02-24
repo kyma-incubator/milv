@@ -15,23 +15,25 @@ func TestConfig(t *testing.T) {
 		}
 
 		expected := &Config{
-			Files: []File{
-				File{
-					RelPath: "./src/foo.md",
-					Config: &FileConfig{
-						WhiteListExt: []string{"github.com"},
-						WhiteListInt: []string{"#contributing"},
-					},
+			Files: []File{{
+				RelPath: "./src/foo.md",
+				Config: &FileConfig{
+					ExternalLinksToIgnore: []string{"github.com"},
+					InternalLinksToIgnore: []string{"#contributing"},
 				},
 			},
-			WhiteListExt: []string{"localhost", "abc.com"},
-			WhiteListInt: []string{"LICENSE"},
-			BlackList:    []string{"./README.md"},
+			},
+			ExternalLinksToIgnore: []string{"localhost", "abc.com"},
+			InternalLinksToIgnore: []string{"LICENSE"},
+			FilesToIgnore:         []string{"./README.md"},
 		}
 
 		result, err := NewConfig(commands)
 
 		require.NoError(t, err)
-		assert.Equal(t, expected, result)
+		assert.Equal(t, expected.Files, result.Files)
+		assert.ElementsMatch(t, expected.ExternalLinksToIgnore, result.ExternalLinksToIgnore)
+		assert.ElementsMatch(t, expected.InternalLinksToIgnore, result.InternalLinksToIgnore)
+		assert.ElementsMatch(t, expected.FilesToIgnore, result.FilesToIgnore)
 	})
 }
