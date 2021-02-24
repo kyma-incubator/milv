@@ -1,5 +1,9 @@
 package pkg
 
+import (
+	"strings"
+)
+
 type FileConfig struct {
 	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
 	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
@@ -40,11 +44,16 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				} else {
 					allowRedirect = &config.AllowRedirect
 				}
+
+				//First we check if files is ignored globally then we check if files is ignored locally. Local settings override global setting
+				var tmp = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
+				ignoreExternal = &tmp
 				if file.Config.IgnoreExternal != nil {
 					ignoreExternal = file.Config.IgnoreExternal
 				} else {
 					ignoreExternal = &config.IgnoreExternal
 				}
+
 				if file.Config.IgnoreInternal != nil {
 					ignoreInternal = file.Config.IgnoreInternal
 				} else {
@@ -63,6 +72,12 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				}
 			}
 		}
+
+		ignoreExternal := config.IgnoreInternal
+		if config.IgnoreInternal == false {
+			ignoreExternal = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
+		}
+
 		return &FileConfig{
 			ExternalLinksToIgnore: config.ExternalLinksToIgnore,
 			InternalLinksToIgnore: config.InternalLinksToIgnore,
@@ -71,8 +86,19 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 			AllowRedirect:         &config.AllowRedirect,
 			AllowCodeBlocks:       &config.AllowCodeBlocks,
 			IgnoreExternal:        &config.IgnoreExternal,
-			IgnoreInternal:        &config.IgnoreInternal,
+			IgnoreInternal:        &ignoreExternal,
 		}
 	}
 	return nil
+}
+
+func isFileIgnored(filePath string, filesToIgnore []string) bool {
+	for _, fileToIgnore := range filesToIgnore {
+		if strings.HasPrefix(fileToIgnore, ".") {
+			return strings.Contains(filePath, fileToIgnore)
+		} else {
+			return strings.Contains(filePath, fileToIgnore)
+		}
+	}
+	return false
 }

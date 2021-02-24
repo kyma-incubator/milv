@@ -14,7 +14,6 @@ func NewFiles(filePaths []string, config *Config) (Files, error) {
 		files = append(files, file)
 	}
 
-	files = markFilesToIgnoreInternalLinks(files, config.FilesToIgnoreInternalLinksIn)
 	return files, nil
 }
 
