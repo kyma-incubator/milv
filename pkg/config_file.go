@@ -36,7 +36,8 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 					requestRepeats = &config.RequestRepeats
 				}
 
-				var allowRedirect, allowCodeBlocks, ignoreExternal, ignoreInternal *bool
+				var allowRedirect, allowCodeBlocks, ignoreExternal *bool
+
 				if file.Config.AllowCodeBlocks != nil {
 					allowCodeBlocks = file.Config.AllowCodeBlocks
 				} else {
@@ -48,19 +49,12 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 					allowRedirect = &config.AllowRedirect
 				}
 
-				//First we check if files is ignored globally then we check if files is ignored locally. Local settings override global setting
-				var tmp = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
-				ignoreExternal = &tmp
+				ignoreInternal := applyInternalIgnorePolicy(filePath, *config, file.Config)
+
 				if file.Config.IgnoreExternal != nil {
 					ignoreExternal = file.Config.IgnoreExternal
 				} else {
 					ignoreExternal = &config.IgnoreExternal
-				}
-
-				if file.Config.IgnoreInternal != nil {
-					ignoreInternal = file.Config.IgnoreInternal
-				} else {
-					ignoreInternal = &config.IgnoreInternal
 				}
 
 				return &FileConfig{
@@ -72,15 +66,12 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 					AllowRedirect:         allowRedirect,
 					AllowCodeBlocks:       allowCodeBlocks,
 					IgnoreExternal:        ignoreExternal,
-					IgnoreInternal:        ignoreInternal,
+					IgnoreInternal:        &ignoreInternal,
 				}
 			}
 		}
 
-		IgnoreInternal := config.IgnoreInternal
-		if config.IgnoreInternal == false {
-			IgnoreInternal = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
-		}
+		ignoreInternal := applyInternalIgnorePolicy(filePath, *config, nil)
 
 		return &FileConfig{
 			BasePath:              config.BasePath,
@@ -91,10 +82,40 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 			AllowRedirect:         &config.AllowRedirect,
 			AllowCodeBlocks:       &config.AllowCodeBlocks,
 			IgnoreExternal:        &config.IgnoreExternal,
-			IgnoreInternal:        &IgnoreInternal,
+			IgnoreInternal:        &ignoreInternal,
 		}
 	}
 	return nil
+}
+
+func findFileConfig(filePath string, files Files) (bool, *File) {
+	for _, file := range files {
+		if filePath == file.RelPath && file.Config != nil {
+			return true, file
+		}
+	}
+	return false, nil
+}
+
+func applyInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
+	var internalIgnore = false
+
+	if config.IgnoreInternal {
+		internalIgnore = true
+	}
+
+	//check if file is covered by ignore internal links in policy
+	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
+		internalIgnore = true
+	}
+
+	//this is JavaGoScript
+	//apply the most important file specific policy
+	if fileConfig != nil && fileConfig.IgnoreInternal != nil && *fileConfig.IgnoreInternal {
+		internalIgnore = true
+	}
+
+	return internalIgnore
 }
 
 func isFileIgnored(filePath string, filesToIgnore []string) bool {
