@@ -20,89 +20,114 @@ type FileConfig struct {
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
 	if config != nil {
-		for _, file := range config.Files {
-			if filePath == file.RelPath && file.Config != nil {
-				var timeout *int
-				if file.Config.Timeout != nil {
-					timeout = file.Config.Timeout
-				} else {
-					timeout = &config.Timeout
-				}
+		cfg := *config
+		file := File{}
 
-				var requestRepeats *int8
-				if file.Config.Timeout != nil {
-					requestRepeats = file.Config.RequestRepeats
-				} else {
-					requestRepeats = &config.RequestRepeats
-				}
-
-				var allowRedirect, allowCodeBlocks, ignoreExternal *bool
-
-				if file.Config.AllowCodeBlocks != nil {
-					allowCodeBlocks = file.Config.AllowCodeBlocks
-				} else {
-					allowCodeBlocks = &config.AllowCodeBlocks
-				}
-				if file.Config.AllowRedirect != nil {
-					allowRedirect = file.Config.AllowRedirect
-				} else {
-					allowRedirect = &config.AllowRedirect
-				}
-
-				ignoreInternal := applyInternalIgnorePolicy(filePath, *config, file.Config)
-
-				if file.Config.IgnoreExternal != nil {
-					ignoreExternal = file.Config.IgnoreExternal
-				} else {
-					ignoreExternal = &config.IgnoreExternal
-				}
-
-				return &FileConfig{
-					BasePath:              config.BasePath,
-					ExternalLinksToIgnore: unique(append(config.ExternalLinksToIgnore, file.Config.ExternalLinksToIgnore...)),
-					InternalLinksToIgnore: unique(append(config.InternalLinksToIgnore, file.Config.InternalLinksToIgnore...)),
-					Timeout:               timeout,
-					RequestRepeats:        requestRepeats,
-					AllowRedirect:         allowRedirect,
-					AllowCodeBlocks:       allowCodeBlocks,
-					IgnoreExternal:        ignoreExternal,
-					IgnoreInternal:        &ignoreInternal,
-				}
-			}
+		if found, foundFile := findFile(filePath, cfg.Files); found {
+			file = foundFile
 		}
 
-		ignoreInternal := applyInternalIgnorePolicy(filePath, *config, nil)
+		timeout := getTimeoutPolicy(cfg, file.Config)
+		requestRepeats := getRequestRepeatPolicy(cfg, file.Config)
+		allowRedirect := getAllowRedirectPolicy(cfg, file.Config)
+		allowCodeBlocks := getAllowCodeBlocksPolicy(cfg, file.Config)
+
+		ignoreInternal := getInternalIgnorePolicy(filePath, cfg, file.Config)
+		ignoreExternal := getIgnoreExternalPolicy(cfg, file.Config)
+
+		externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
+		internalLinksToIgnore := getInternalLinksToIgnore(cfg, file.Config)
 
 		return &FileConfig{
 			BasePath:              config.BasePath,
-			ExternalLinksToIgnore: config.ExternalLinksToIgnore,
-			InternalLinksToIgnore: config.InternalLinksToIgnore,
-			Timeout:               &config.Timeout,
-			RequestRepeats:        &config.RequestRepeats,
-			AllowRedirect:         &config.AllowRedirect,
-			AllowCodeBlocks:       &config.AllowCodeBlocks,
-			IgnoreExternal:        &config.IgnoreExternal,
+			ExternalLinksToIgnore: externalLinksToIgnore,
+			InternalLinksToIgnore: internalLinksToIgnore,
+			Timeout:               &timeout,
+			RequestRepeats:        &requestRepeats,
+			AllowRedirect:         &allowRedirect,
+			AllowCodeBlocks:       &allowCodeBlocks,
+			IgnoreExternal:        &ignoreExternal,
 			IgnoreInternal:        &ignoreInternal,
 		}
 	}
 	return nil
 }
 
-func findFileConfig(filePath string, files Files) (bool, *File) {
+func findFile(filePath string, files []File) (bool, File) {
 	for _, file := range files {
 		if filePath == file.RelPath && file.Config != nil {
 			return true, file
 		}
 	}
-	return false, nil
+	return false, File{}
 }
 
-func applyInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
-	var internalIgnore = false
+func getRequestRepeatPolicy(config Config, fileConfig *FileConfig) int8 {
+	requestRepeats := config.RequestRepeats
 
-	if config.IgnoreInternal {
-		internalIgnore = true
+	if fileConfig != nil && fileConfig.RequestRepeats != nil {
+		requestRepeats = *fileConfig.RequestRepeats
 	}
+
+	return requestRepeats
+}
+
+func getAllowRedirectPolicy(config Config, fileConfig *FileConfig) bool {
+	allowRedirect := config.AllowRedirect
+	if fileConfig != nil && fileConfig.AllowRedirect != nil {
+		allowRedirect = *fileConfig.AllowRedirect
+	}
+
+	return allowRedirect
+}
+
+func getAllowCodeBlocksPolicy(config Config, fileConfig *FileConfig) bool {
+	allowCodeBlocks := config.AllowCodeBlocks
+	if fileConfig != nil && fileConfig.AllowCodeBlocks != nil {
+		allowCodeBlocks = *fileConfig.AllowCodeBlocks
+	}
+	return allowCodeBlocks
+}
+
+func getTimeoutPolicy(config Config, fileConfig *FileConfig) int {
+	timeout := config.Timeout
+
+	if fileConfig != nil && fileConfig.Timeout != nil {
+		timeout = *fileConfig.Timeout
+	}
+
+	return timeout
+}
+
+func getIgnoreExternalPolicy(config Config, fileConfig *FileConfig) bool {
+	ignoreExternal := config.IgnoreExternal
+
+	if fileConfig != nil && fileConfig.IgnoreExternal != nil {
+		ignoreExternal = *fileConfig.IgnoreExternal
+	}
+	return ignoreExternal
+}
+
+func getExternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
+	externalLinksToIgnore := config.ExternalLinksToIgnore
+	if fileConfig != nil {
+		externalLinksToIgnore = unique(append(config.ExternalLinksToIgnore, fileConfig.ExternalLinksToIgnore...))
+	}
+
+	return externalLinksToIgnore
+}
+
+func getInternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
+	internalLinksToIgnore := config.InternalLinksToIgnore
+	if fileConfig != nil {
+		internalLinksToIgnore = unique(append(config.InternalLinksToIgnore, fileConfig.InternalLinksToIgnore...))
+	}
+
+	return internalLinksToIgnore
+}
+
+func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
+	internalIgnore := config.IgnoreExternal
 
 	//check if file is covered by ignore internal links in policy
 	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
