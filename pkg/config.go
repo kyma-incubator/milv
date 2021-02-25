@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"io/ioutil"
-	"path"
 
 	"gopkg.in/yaml.v2"
 
@@ -10,6 +9,7 @@ import (
 )
 
 type Config struct {
+	BasePath                     string
 	Files                        []File   `yaml:"files"`
 	ExternalLinksToIgnore        []string `yaml:"external-links-to-ignore"`
 	InternalLinksToIgnore        []string `yaml:"internal-links-to-ignore"`
@@ -82,6 +82,7 @@ func (c *Config) combine(commands cli.Commands) *Config {
 	}
 
 	return &Config{
+		BasePath:                     commands.BasePath,
 		Files:                        c.Files,
 		ExternalLinksToIgnore:        unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
 		InternalLinksToIgnore:        unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
@@ -94,14 +95,4 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		IgnoreExternal:               ignoreExternal,
 		IgnoreInternal:               ignoreInternal,
 	}
-}
-
-func cleanPaths(inputPaths []string) []string {
-	var cleanPaths []string
-	for _, inputPath := range inputPaths {
-		cleanPath := path.Clean(inputPath)
-		cleanPaths = append(cleanPaths, cleanPath)
-	}
-
-	return cleanPaths
 }

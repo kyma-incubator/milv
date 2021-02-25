@@ -64,12 +64,16 @@ func (f *File) ExtractLinks() *File {
 	}
 
 	content := f.Content
-	if f.Config != nil && !*f.Config.AllowCodeBlocks {
+	if f.Config != nil && f.Config.AllowCodeBlocks != nil && !*f.Config.AllowCodeBlocks {
 		content = removeCodeBlocks(content)
 	}
 
+	basePath := ""
+	if f.Config != nil {
+		basePath = f.Config.BasePath
+	}
 	f.Links = f.parser.
-		Links(content, f.DirPath).
+		Links(basePath, content, f.DirPath).
 		AppendConfig(f).
 		RemoveIgnoredLinks(externalLinksToIgnore, internalLinksToIgnore).
 		Filter(func(link Link) bool {

@@ -10,9 +10,12 @@ import (
 func TestStats(t *testing.T) {
 	var links Links
 
+	cfg := &FileConfig{
+		BasePath: "test-markdowns",
+	}
 	t.Run("External Links", func(t *testing.T) {
 		t.Skip("Temporarily skipped because not existing host case doesn't work")
-		file, err := NewFile("test-markdowns/external_links.md", links, nil)
+		file, err := NewFile("test-markdowns/external_links.md", links, cfg)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -57,7 +60,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Internal Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/sub_path/internal_links.md", links, nil)
+		file, err := NewFile("test-markdowns/sub_path/internal_links.md", links, cfg)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -71,6 +74,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						AbsPath: "test-markdowns/sub_path/sub_sub_path/without_links.md",
@@ -79,6 +83,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						AbsPath: "test-markdowns/sub_path/absolute_path.md",
@@ -87,6 +92,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 				},
 			},
@@ -101,6 +107,7 @@ func TestStats(t *testing.T) {
 							Status:  false,
 							Message: "The specified file doesn't exist",
 						},
+						Config: &LinkConfig{},
 					},
 				},
 			},
@@ -113,7 +120,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Hash Internal Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/hash_internal_links.md", links, nil)
+		file, err := NewFile("test-markdowns/hash_internal_links.md", links, cfg)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -126,6 +133,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						AbsPath: "https://github.com",
@@ -133,6 +141,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#first-header",
@@ -140,6 +149,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#second-header",
@@ -147,6 +157,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#third-header",
@@ -154,6 +165,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#header-with-block",
@@ -161,6 +173,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#header-with-link",
@@ -168,6 +181,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 					Link{
 						RelPath: "#very-strange-header-really-people-create-headers-look-like-this",
@@ -175,6 +189,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 				},
 			},
@@ -188,6 +203,7 @@ func TestStats(t *testing.T) {
 							Status:  false,
 							Message: "The specified header doesn't exist in file",
 						},
+						Config: &LinkConfig{},
 					},
 				},
 			},
@@ -200,7 +216,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Absolute Internal Path", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/sub_path/absolute_path.md", links, nil)
+		file, err := NewFile("test-markdowns/sub_path/absolute_path.md", links, cfg)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -214,6 +230,7 @@ func TestStats(t *testing.T) {
 						Result: LinkResult{
 							Status: true,
 						},
+						Config: &LinkConfig{},
 					},
 				},
 			},

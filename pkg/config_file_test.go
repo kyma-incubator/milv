@@ -10,10 +10,9 @@ import (
 
 func TestConfigFile(t *testing.T) {
 	t.Run("Config File", func(t *testing.T) {
-		SetBasePath("test-markdowns", false)
-
 		commands := cli.Commands{
 			ConfigFile: "test-markdowns/milv-test.config.yaml",
+			BasePath:   "test-markdowns",
 		}
 
 		expected := &FileConfig{
@@ -35,39 +34,39 @@ func TestConfigFile(t *testing.T) {
 		tcs := []struct {
 			Name                         string
 			FilePath                     string
-			Expected                     bool
+			ShouldBeIgnored              bool
 			FilesToIgnoreInternalLinksIn []string
 		}{
 			{
-				Name:                         "File has IgnoreInternal config set to True",
+				Name:                         "File and Ignore has relative path",
 				FilePath:                     "ignore-me-internally/my-markdown.md",
-				Expected:                     true,
+				ShouldBeIgnored:              true,
 				FilesToIgnoreInternalLinksIn: []string{"ignore-me-internally"},
 			}, {
-				Name:                         "File has IgnoreInternal config set to True, relative path",
+				Name:                         "File has relative path with ./ path and Ignore has relative path",
 				FilePath:                     "./ignore-me-internally/my-markdown.md",
-				Expected:                     true,
+				ShouldBeIgnored:              true,
 				FilesToIgnoreInternalLinksIn: []string{"ignore-me-internally"},
 			}, {
-				Name:                         "Ignore concrete directory",
+				Name:                         "File and Ignore has relative path with ./",
 				FilePath:                     "./ignore-me-internally/my-markdown.md",
-				Expected:                     true,
+				ShouldBeIgnored:              true,
 				FilesToIgnoreInternalLinksIn: []string{"./ignore-me-internally"},
 			}, {
-				Name:                         "",
+				Name:                         "File has relative path path and Ignore has relative path with ./",
 				FilePath:                     "ignore-me-internally/my-markdown.md",
-				Expected:                     true,
+				ShouldBeIgnored:              true,
 				FilesToIgnoreInternalLinksIn: []string{"./ignore-me-internally"},
 			}, {
-				Name:                         "File should be ignored even contains ignored substring ",
+				Name:                         "File should not be ignored when contains ignored substring in path",
 				FilePath:                     "not-ignore-me/my-markdown.md",
-				Expected:                     false,
+				ShouldBeIgnored:              false,
 				FilesToIgnoreInternalLinksIn: []string{"ignore"},
 			},
 			{
 				Name:                         "File should be ignored",
-				FilePath:                     "not-ignore-me/my-markdown.md",
-				Expected:                     false,
+				FilePath:                     "./ignore-me-internally/not-ignore-me/my-markdown.md",
+				ShouldBeIgnored:              true,
 				FilesToIgnoreInternalLinksIn: []string{"./ignore-me-internally"},
 			}}
 
@@ -84,7 +83,7 @@ func TestConfigFile(t *testing.T) {
 				//THEN
 				require.NotNil(t, fileCfg)
 				require.NotNil(t, fileCfg.IgnoreInternal)
-				require.Equal(t, tc.Expected, *fileCfg.IgnoreInternal)
+				require.Equal(t, tc.ShouldBeIgnored, *fileCfg.IgnoreInternal)
 			})
 		}
 	})

@@ -7,6 +7,7 @@ import (
 )
 
 type FileConfig struct {
+	BasePath              string
 	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
 	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
 	Timeout               *int     `yaml:"timeout"`
@@ -63,6 +64,7 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 				}
 
 				return &FileConfig{
+					BasePath:              config.BasePath,
 					ExternalLinksToIgnore: unique(append(config.ExternalLinksToIgnore, file.Config.ExternalLinksToIgnore...)),
 					InternalLinksToIgnore: unique(append(config.InternalLinksToIgnore, file.Config.InternalLinksToIgnore...)),
 					Timeout:               timeout,
@@ -75,12 +77,13 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 			}
 		}
 
-		ignoreExternal := config.IgnoreInternal
+		IgnoreInternal := config.IgnoreInternal
 		if config.IgnoreInternal == false {
-			ignoreExternal = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
+			IgnoreInternal = isFileIgnored(filePath, config.FilesToIgnoreInternalLinksIn)
 		}
 
 		return &FileConfig{
+			BasePath:              config.BasePath,
 			ExternalLinksToIgnore: config.ExternalLinksToIgnore,
 			InternalLinksToIgnore: config.InternalLinksToIgnore,
 			Timeout:               &config.Timeout,
@@ -88,7 +91,7 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 			AllowRedirect:         &config.AllowRedirect,
 			AllowCodeBlocks:       &config.AllowCodeBlocks,
 			IgnoreExternal:        &config.IgnoreExternal,
-			IgnoreInternal:        &ignoreExternal,
+			IgnoreInternal:        &IgnoreInternal,
 		}
 	}
 	return nil
@@ -97,6 +100,7 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 func isFileIgnored(filePath string, filesToIgnore []string) bool {
 	for _, fileToIgnore := range filesToIgnore {
 		if strings.HasPrefix(fileToIgnore, ".") {
+			//fileToIgnore := path.Join(basePath, fileToIgnore)
 			//block concrete path or file
 			return checkIfFileIsInIgnorePath(fileToIgnore, filePath)
 		} else {
