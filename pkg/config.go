@@ -85,7 +85,7 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		Files:                        c.Files,
 		ExternalLinksToIgnore:        unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
 		InternalLinksToIgnore:        unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
-		FilesToIgnoreInternalLinksIn: unique(append(cleanPaths(c.FilesToIgnoreInternalLinksIn), cleanPaths(commands.FilesToIgnoreInternalLinksIn)...)),
+		FilesToIgnoreInternalLinksIn: unique(append(c.FilesToIgnoreInternalLinksIn, commands.FilesToIgnoreInternalLinksIn...)),
 		FilesToIgnore:                unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
 		Timeout:                      timeout,
 		RequestRepeats:               requestRepeats,

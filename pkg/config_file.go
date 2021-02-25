@@ -1,6 +1,8 @@
 package pkg
 
 import (
+	"fmt"
+	"path"
 	"strings"
 )
 
@@ -95,10 +97,24 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 func isFileIgnored(filePath string, filesToIgnore []string) bool {
 	for _, fileToIgnore := range filesToIgnore {
 		if strings.HasPrefix(fileToIgnore, ".") {
-			return strings.Contains(filePath, fileToIgnore)
+			//block concrete path or file
+			return checkIfFileIsInIgnorePath(fileToIgnore, filePath)
 		} else {
-			return strings.Contains(filePath, fileToIgnore)
+			return checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath)
 		}
 	}
 	return false
+}
+
+func checkIfFileIsInIgnorePath(fileToIgnore, filePath string) bool {
+	startingPath := path.Clean(fileToIgnore)
+	cleanFilePath := path.Clean(filePath)
+
+	return strings.HasPrefix(cleanFilePath, startingPath)
+}
+
+func checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath string) bool {
+	rootedFilePath := fmt.Sprintf(`/%s`, filePath)
+	dirToIgnore := fmt.Sprintf(`/%s/`, fileToIgnore)
+	return strings.Contains(rootedFilePath, dirToIgnore)
 }

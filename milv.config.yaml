@@ -1,5 +1,6 @@
 external-links-to-ignore: ["localhost"]
 files-to-ignore: ["/vendor/", "test-markdowns"]
+files-to-ignore-internal-links-in: [ "./internal-ignore/" ]
 files:
   - path: "./milv/README.md"
     config:
