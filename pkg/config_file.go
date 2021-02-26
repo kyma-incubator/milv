@@ -18,7 +18,7 @@ type FileConfig struct {
 	IgnoreInternal        *bool    `yaml:"ignore-internal"`
 }
 
-func CombineConfigsForFile(filePath string, config *Config) *FileConfig {
+func NewFileConfig(filePath string, config *Config) *FileConfig {
 	if config != nil {
 		cfg := *config
 		file := File{}

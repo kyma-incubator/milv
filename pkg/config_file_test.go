@@ -25,7 +25,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 		require.NoError(t, err)
 
 		//WHEN
-		result := CombineConfigsForFile("./src/foo.md", config)
+		result := NewFileConfig("./src/foo.md", config)
 
 		//THEN
 		require.NoError(t, err)
@@ -81,7 +81,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 				}
 
 				//WHEN
-				fileCfg := CombineConfigsForFile(tc.FilePath, cfg)
+				fileCfg := NewFileConfig(tc.FilePath, cfg)
 
 				//THEN
 				require.NotNil(t, fileCfg)
@@ -116,7 +116,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 			IgnoreInternal:  &trueBool,
 		}
 		//WHEN
-		newConfig := CombineConfigsForFile("any-path", cfg)
+		newConfig := NewFileConfig("any-path", cfg)
 
 		//THEN
 		require.NotNil(t, newConfig)
@@ -166,7 +166,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 		}
 
 		//WHEN
-		mergedFileConfig := CombineConfigsForFile(filePath, cfg)
+		mergedFileConfig := NewFileConfig(filePath, cfg)
 
 		//THEN
 		require.NotNil(t, mergedFileConfig)
