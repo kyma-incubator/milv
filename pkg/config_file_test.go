@@ -94,7 +94,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 	t.Run("Config without file Configs", func(t *testing.T) {
 		//GIVEN
 		timeout := 5
-		requestRepeats := int8(6)
+		requestRepeats := int(6)
 		trueBool := true
 		cfg := &Config{
 			BasePath:        "path",
@@ -126,7 +126,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 	t.Run("Config with matching File Configs", func(t *testing.T) {
 		//GIVEN
 		timeout := 5
-		requestRepeats := int8(6)
+		requestRepeats := int(6)
 		trueBool := true
 		filePath := "path"
 

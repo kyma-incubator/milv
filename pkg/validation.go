@@ -95,12 +95,12 @@ func (*Validation) externalLink(link Link) (Link, error) {
 		client.Timeout = time.Duration(int(time.Second) * 30)
 	}
 
-	requestRepeats := int8(1)
+	requestRepeats := 1
 	if link.Config != nil && link.Config.RequestRepeats != nil && *link.Config.RequestRepeats > 0 {
 		requestRepeats = *link.Config.RequestRepeats
 	}
 
-	for i := int8(0); i < requestRepeats; i++ {
+	for i := 0; i < requestRepeats; i++ {
 		resp, err := client.Get(absPath)
 		if err != nil {
 			status = false

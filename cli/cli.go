@@ -17,7 +17,7 @@ type Commands struct {
 	FilesToIgnore                []string
 	FilesToIgnoreInternalLinksIn []string
 	Timeout                      int
-	RequestRepeats               int8
+	RequestRepeats               int
 	AllowRedirect                bool
 	AllowCodeBlocks              bool
 	IgnoreExternal               bool
@@ -68,7 +68,7 @@ func ParseCommands() Commands {
 		InternalLinksToIgnore: strings.Split(*internalLinksToIgnore, ","),
 		FilesToIgnore:         strings.Split(*filesToIgnore, ","),
 		Timeout:               *timeout,
-		RequestRepeats:        int8(*requestRepeats),
+		RequestRepeats:        *requestRepeats,
 		AllowRedirect:         *allowRedirect,
 		AllowCodeBlocks:       *allowCodeBlocks,
 		IgnoreExternal:        *ignoreExternal,

@@ -16,7 +16,7 @@ type Config struct {
 	FilesToIgnore                []string `yaml:"files-to-ignore"`
 	FilesToIgnoreInternalLinksIn []string `yaml:"files-to-ignore-internal-links-in"`
 	Timeout                      int      `yaml:"timeout"`
-	RequestRepeats               int8     `yaml:"request-repeats"`
+	RequestRepeats               int      `yaml:"request-repeats"`
 	AllowRedirect                bool     `yaml:"allow-redirect"`
 	AllowCodeBlocks              bool     `yaml:"allow-code-blocks"`
 	IgnoreExternal               bool     `yaml:"ignore-external"`
@@ -52,7 +52,7 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		timeout = c.Timeout
 	}
 
-	var requestRepeats int8
+	var requestRepeats int
 	if commands.FlagsSet["request-repeats"] {
 		requestRepeats = commands.RequestRepeats
 	} else {
