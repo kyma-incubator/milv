@@ -9,7 +9,8 @@ import (
 )
 
 func TestCombineConfigsForFile(t *testing.T) {
-	t.Run("Links to ignore", func(t *testing.T) {
+	t.Run("Check if links to ignore are merged", func(t *testing.T) {
+		//GIVEN
 		commands := cli.Commands{
 			ConfigFile: "test-markdowns/milv-test.config.yaml",
 			BasePath:   "test-markdowns",
@@ -23,8 +24,10 @@ func TestCombineConfigsForFile(t *testing.T) {
 		config, err := NewConfig(commands)
 		require.NoError(t, err)
 
+		//WHEN
 		result := CombineConfigsForFile("./src/foo.md", config)
 
+		//THEN
 		require.NoError(t, err)
 		assert.ElementsMatch(t, expected.ExternalLinksToIgnore, result.ExternalLinksToIgnore)
 		assert.ElementsMatch(t, expected.InternalLinksToIgnore, result.InternalLinksToIgnore)
@@ -89,6 +92,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 	})
 
 	t.Run("Config without file Configs", func(t *testing.T) {
+		//GIVEN
 		timeout := 5
 		requestRepeats := int8(6)
 		trueBool := true
