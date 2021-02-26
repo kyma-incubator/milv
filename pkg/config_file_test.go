@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestConfigFile(t *testing.T) {
-	t.Run("Config File", func(t *testing.T) {
+func TestCombineConfigsForFile(t *testing.T) {
+	t.Run("Links to ignore", func(t *testing.T) {
 		commands := cli.Commands{
 			ConfigFile: "test-markdowns/milv-test.config.yaml",
 			BasePath:   "test-markdowns",
@@ -23,14 +23,14 @@ func TestConfigFile(t *testing.T) {
 		config, err := NewConfig(commands)
 		require.NoError(t, err)
 
-		result := NewFileConfig("./src/foo.md", config)
+		result := CombineConfigsForFile("./src/foo.md", config)
 
 		require.NoError(t, err)
 		assert.ElementsMatch(t, expected.ExternalLinksToIgnore, result.ExternalLinksToIgnore)
 		assert.ElementsMatch(t, expected.InternalLinksToIgnore, result.InternalLinksToIgnore)
 	})
 
-	t.Run("File has IgnoreInternal config set to True", func(t *testing.T) {
+	t.Run("Check different scenario for ignoring internal links paths", func(t *testing.T) {
 		tcs := []struct {
 			Name                         string
 			FilePath                     string
@@ -78,7 +78,7 @@ func TestConfigFile(t *testing.T) {
 				}
 
 				//WHEN
-				fileCfg := NewFileConfig(tc.FilePath, cfg)
+				fileCfg := CombineConfigsForFile(tc.FilePath, cfg)
 
 				//THEN
 				require.NotNil(t, fileCfg)
@@ -86,5 +86,86 @@ func TestConfigFile(t *testing.T) {
 				require.Equal(t, tc.ShouldBeIgnored, *fileCfg.IgnoreInternal)
 			})
 		}
+	})
+
+	t.Run("Config without file Configs", func(t *testing.T) {
+		timeout := 5
+		requestRepeats := int8(6)
+		trueBool := true
+		cfg := &Config{
+			BasePath:        "path",
+			RequestRepeats:  requestRepeats,
+			Timeout:         timeout,
+			AllowRedirect:   true,
+			AllowCodeBlocks: true,
+			IgnoreExternal:  true,
+			IgnoreInternal:  true,
+		}
+
+		expectedCfg := &FileConfig{
+			BasePath:        "path",
+			Timeout:         &timeout,
+			RequestRepeats:  &requestRepeats,
+			AllowRedirect:   &trueBool,
+			AllowCodeBlocks: &trueBool,
+			IgnoreExternal:  &trueBool,
+			IgnoreInternal:  &trueBool,
+		}
+		//WHEN
+		newConfig := CombineConfigsForFile("any-path", cfg)
+
+		//THEN
+		require.NotNil(t, newConfig)
+		assert.Equal(t, expectedCfg, newConfig)
+	})
+
+	t.Run("Config with matching File Configs", func(t *testing.T) {
+		//GIVEN
+		timeout := 5
+		requestRepeats := int8(6)
+		trueBool := true
+		filePath := "path"
+
+		files := []File{
+			{RelPath: "some-random/documentation.md"},
+			{
+				RelPath: filePath,
+				Config: &FileConfig{
+					Timeout:         &timeout,
+					RequestRepeats:  &requestRepeats,
+					AllowRedirect:   &trueBool,
+					AllowCodeBlocks: &trueBool,
+					IgnoreExternal:  &trueBool,
+					IgnoreInternal:  &trueBool,
+				}},
+		}
+
+		cfg := &Config{
+			Files:           files,
+			Timeout:         timeout,
+			RequestRepeats:  requestRepeats,
+			AllowRedirect:   false,
+			AllowCodeBlocks: false,
+			IgnoreExternal:  false,
+			IgnoreInternal:  false,
+		}
+
+		expectedCfg := FileConfig{
+			ExternalLinksToIgnore: []string{},
+			InternalLinksToIgnore: []string{},
+			Timeout:               &timeout,
+			RequestRepeats:        &requestRepeats,
+			AllowRedirect:         &trueBool,
+			AllowCodeBlocks:       &trueBool,
+			IgnoreExternal:        &trueBool,
+			IgnoreInternal:        &trueBool,
+		}
+
+		//WHEN
+		mergedFileConfig := CombineConfigsForFile(filePath, cfg)
+
+		//THEN
+		require.NotNil(t, mergedFileConfig)
+		assert.Equal(t, expectedCfg, *mergedFileConfig)
 	})
 }
