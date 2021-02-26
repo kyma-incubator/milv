@@ -129,13 +129,10 @@ func getInternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
 func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
 	internalIgnore := config.IgnoreExternal
 
-	//check if file is covered by ignore internal links in policy
 	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
 		internalIgnore = true
 	}
 
-	//this is JavaGoScript
-	//apply the most important file specific policy
 	if fileConfig != nil && fileConfig.IgnoreInternal != nil && *fileConfig.IgnoreInternal {
 		internalIgnore = true
 	}
@@ -146,8 +143,6 @@ func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileCon
 func isFileIgnored(filePath string, filesToIgnore []string) bool {
 	for _, fileToIgnore := range filesToIgnore {
 		if strings.HasPrefix(fileToIgnore, ".") {
-			//fileToIgnore := path.Join(basePath, fileToIgnore)
-			//block concrete path or file
 			return checkIfFileIsInIgnorePath(fileToIgnore, filePath)
 		} else {
 			return checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath)
