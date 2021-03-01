@@ -3,26 +3,13 @@ package pkg
 import (
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
-)
-
-var (
-	_BASE_PATH string = ""
 )
 
 const (
 	codeBlockPattern = `(?m)^(.*\x60{3}).*\n(.*|\n)+?\n(.*\x60{3})$`
 )
-
-func SetBasePath(path string, absolute bool) {
-	if absolute {
-		_BASE_PATH, _ = filepath.Abs(path)
-	} else {
-		_BASE_PATH = path
-	}
-}
 
 func fileExists(file string) error {
 	if _, err := os.Stat(file); err != nil {

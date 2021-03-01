@@ -13,6 +13,7 @@ func NewFiles(filePaths []string, config *Config) (Files, error) {
 		}
 		files = append(files, file)
 	}
+
 	return files, nil
 }
 

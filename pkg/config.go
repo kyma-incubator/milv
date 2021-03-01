@@ -9,16 +9,18 @@ import (
 )
 
 type Config struct {
-	Files                 []File   `yaml:"files"`
-	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
-	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
-	FilesToIgnore         []string `yaml:"files-to-ignore"`
-	Timeout               int      `yaml:"timeout"`
-	RequestRepeats        int8     `yaml:"request-repeats"`
-	AllowRedirect         bool     `yaml:"allow-redirect"`
-	AllowCodeBlocks       bool     `yaml:"allow-code-blocks"`
-	IgnoreExternal        bool     `yaml:"ignore-external"`
-	IgnoreInternal        bool     `yaml:"ignore-internal"`
+	BasePath                     string
+	Files                        []File   `yaml:"files"`
+	ExternalLinksToIgnore        []string `yaml:"external-links-to-ignore"`
+	InternalLinksToIgnore        []string `yaml:"internal-links-to-ignore"`
+	FilesToIgnore                []string `yaml:"files-to-ignore"`
+	FilesToIgnoreInternalLinksIn []string `yaml:"files-to-ignore-internal-links-in"`
+	Timeout                      int      `yaml:"timeout"`
+	RequestRepeats               int      `yaml:"request-repeats"`
+	AllowRedirect                bool     `yaml:"allow-redirect"`
+	AllowCodeBlocks              bool     `yaml:"allow-code-blocks"`
+	IgnoreExternal               bool     `yaml:"ignore-external"`
+	IgnoreInternal               bool     `yaml:"ignore-internal"`
 }
 
 func NewConfig(commands cli.Commands) (*Config, error) {
@@ -50,7 +52,7 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		timeout = c.Timeout
 	}
 
-	var requestRepeats int8
+	var requestRepeats int
 	if commands.FlagsSet["request-repeats"] {
 		requestRepeats = commands.RequestRepeats
 	} else {
@@ -80,15 +82,17 @@ func (c *Config) combine(commands cli.Commands) *Config {
 	}
 
 	return &Config{
-		Files:                 c.Files,
-		ExternalLinksToIgnore: unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
-		InternalLinksToIgnore: unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
-		FilesToIgnore:         unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
-		Timeout:               timeout,
-		RequestRepeats:        requestRepeats,
-		AllowRedirect:         allowRedirect,
-		AllowCodeBlocks:       allowCodeBlocks,
-		IgnoreExternal:        ignoreExternal,
-		IgnoreInternal:        ignoreInternal,
+		BasePath:                     commands.BasePath,
+		Files:                        c.Files,
+		ExternalLinksToIgnore:        unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
+		InternalLinksToIgnore:        unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
+		FilesToIgnoreInternalLinksIn: unique(append(c.FilesToIgnoreInternalLinksIn, commands.FilesToIgnoreInternalLinksIn...)),
+		FilesToIgnore:                unique(append(c.FilesToIgnore, commands.FilesToIgnore...)),
+		Timeout:                      timeout,
+		RequestRepeats:               requestRepeats,
+		AllowRedirect:                allowRedirect,
+		AllowCodeBlocks:              allowCodeBlocks,
+		IgnoreExternal:               ignoreExternal,
+		IgnoreInternal:               ignoreInternal,
 	}
 }

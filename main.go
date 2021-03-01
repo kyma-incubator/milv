@@ -10,8 +10,6 @@ import (
 
 func main() {
 	cliCommands := cli.ParseCommands()
-	milv.SetBasePath(cliCommands.BasePath, false)
-
 	config, err := milv.NewConfig(cliCommands)
 	if err != nil {
 		panic(err)

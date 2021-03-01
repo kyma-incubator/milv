@@ -27,8 +27,8 @@ const (
 	urlCatchGroup = 2
 )
 
-func (p *Parser) Links(markdown, dirPath string) Links {
-	return p.extractLinks(p.parse(markdown, linkPattern, p.getLink), dirPath)
+func (p *Parser) Links(basePath, markdown, dirPath string) Links {
+	return p.extractLinks(basePath, p.parse(markdown, linkPattern, p.getLink), dirPath)
 }
 
 func (p *Parser) Headers(markdown string) []string {
@@ -91,7 +91,7 @@ func (p *Parser) getHeader(matches [][]string) string {
 	return reg.ReplaceAllString(header, "")
 }
 
-func (p *Parser) extractLinks(links []string, dirPath string) Links {
+func (p *Parser) extractLinks(basePath string, links []string, dirPath string) Links {
 	var extractedLinks Links
 	for _, link := range links {
 		if match, _ := regexp.MatchString(httpsPattern, link); match {
@@ -99,7 +99,7 @@ func (p *Parser) extractLinks(links []string, dirPath string) Links {
 		} else if match, _ := regexp.MatchString(hashPattern, link); match {
 			extractedLinks = append(extractedLinks, p.hashInternalLink(link))
 		} else {
-			extractedLinks = append(extractedLinks, p.internalLink(link, dirPath))
+			extractedLinks = append(extractedLinks, p.internalLink(basePath, link, dirPath))
 		}
 	}
 	return extractedLinks
@@ -121,11 +121,11 @@ func (p *Parser) hashInternalLink(link string) Link {
 	}
 }
 
-func (p *Parser) internalLink(link, dirPath string) Link {
+func (p *Parser) internalLink(basePath, link, dirPath string) Link {
 	var absPath string
 
 	if strings.HasPrefix(link, "/") {
-		absPath = fmt.Sprintf("%s%s", _BASE_PATH, link)
+		absPath = fmt.Sprintf("%s%s", basePath, link)
 	} else {
 		absPath = path.Join(dirPath, link)
 	}

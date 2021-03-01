@@ -9,20 +9,21 @@ import (
 )
 
 type Commands struct {
-	BasePath              string
-	ConfigFile            string
-	Files                 []string
-	ExternalLinksToIgnore []string
-	InternalLinksToIgnore []string
-	FilesToIgnore         []string
-	Timeout               int
-	RequestRepeats        int8
-	AllowRedirect         bool
-	AllowCodeBlocks       bool
-	IgnoreExternal        bool
-	IgnoreInternal        bool
-	Verbose               bool
-	FlagsSet              map[string]bool
+	BasePath                     string
+	ConfigFile                   string
+	Files                        []string
+	ExternalLinksToIgnore        []string
+	InternalLinksToIgnore        []string
+	FilesToIgnore                []string
+	FilesToIgnoreInternalLinksIn []string
+	Timeout                      int
+	RequestRepeats               int
+	AllowRedirect                bool
+	AllowCodeBlocks              bool
+	IgnoreExternal               bool
+	IgnoreInternal               bool
+	Verbose                      bool
+	FlagsSet                     map[string]bool
 }
 
 func ParseCommands() Commands {
@@ -67,7 +68,7 @@ func ParseCommands() Commands {
 		InternalLinksToIgnore: strings.Split(*internalLinksToIgnore, ","),
 		FilesToIgnore:         strings.Split(*filesToIgnore, ","),
 		Timeout:               *timeout,
-		RequestRepeats:        int8(*requestRepeats),
+		RequestRepeats:        *requestRepeats,
 		AllowRedirect:         *allowRedirect,
 		AllowCodeBlocks:       *allowCodeBlocks,
 		IgnoreExternal:        *ignoreExternal,

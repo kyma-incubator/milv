@@ -62,7 +62,6 @@ func TestFile(t *testing.T) {
 	})
 
 	t.Run("Validate Links", func(t *testing.T) {
-		t.Skip("Temporarily skipped because not existing host case doesn't work")
 		file, err := NewFile("test-markdowns/external_links.md", links, nil)
 		require.NoError(t, err)
 
@@ -86,7 +85,7 @@ func TestFile(t *testing.T) {
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status:  false,
-					Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
+					Message: "404 Not Found",
 				},
 			},
 		}

@@ -1,10 +1,17 @@
 package pkg
 
+import (
+	"fmt"
+	"path"
+	"strings"
+)
+
 type FileConfig struct {
+	BasePath              string
 	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
 	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
 	Timeout               *int     `yaml:"timeout"`
-	RequestRepeats        *int8    `yaml:"request-repeats"`
+	RequestRepeats        *int     `yaml:"request-repeats"`
 	AllowRedirect         *bool    `yaml:"allow-redirect"`
 	AllowCodeBlocks       *bool    `yaml:"allow-code-blocks"`
 	IgnoreExternal        *bool    `yaml:"ignore-external"`
@@ -12,67 +19,126 @@ type FileConfig struct {
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
-	if config != nil {
-		for _, file := range config.Files {
-			if filePath == file.RelPath && file.Config != nil {
-				var timeout *int
-				if file.Config.Timeout != nil {
-					timeout = file.Config.Timeout
-				} else {
-					timeout = &config.Timeout
-				}
+	if config == nil {
+		return nil
+	}
 
-				var requestRepeats *int8
-				if file.Config.Timeout != nil {
-					requestRepeats = file.Config.RequestRepeats
-				} else {
-					requestRepeats = &config.RequestRepeats
-				}
+	cfg := *config
+	file := File{}
 
-				var allowRedirect, allowCodeBlocks, ignoreExternal, ignoreInternal *bool
-				if file.Config.AllowCodeBlocks != nil {
-					allowCodeBlocks = file.Config.AllowCodeBlocks
-				} else {
-					allowCodeBlocks = &config.AllowCodeBlocks
-				}
-				if file.Config.AllowRedirect != nil {
-					allowRedirect = file.Config.AllowRedirect
-				} else {
-					allowRedirect = &config.AllowRedirect
-				}
-				if file.Config.IgnoreExternal != nil {
-					ignoreExternal = file.Config.IgnoreExternal
-				} else {
-					ignoreExternal = &config.IgnoreExternal
-				}
-				if file.Config.IgnoreInternal != nil {
-					ignoreInternal = file.Config.IgnoreInternal
-				} else {
-					ignoreInternal = &config.IgnoreInternal
-				}
+	if found, foundFile := findFile(filePath, cfg.Files); found {
+		file = foundFile
+	}
 
-				return &FileConfig{
-					ExternalLinksToIgnore: unique(append(config.ExternalLinksToIgnore, file.Config.ExternalLinksToIgnore...)),
-					InternalLinksToIgnore: unique(append(config.InternalLinksToIgnore, file.Config.InternalLinksToIgnore...)),
-					Timeout:               timeout,
-					RequestRepeats:        requestRepeats,
-					AllowRedirect:         allowRedirect,
-					AllowCodeBlocks:       allowCodeBlocks,
-					IgnoreExternal:        ignoreExternal,
-					IgnoreInternal:        ignoreInternal,
-				}
-			}
-		}
-		return &FileConfig{
-			ExternalLinksToIgnore: config.ExternalLinksToIgnore,
-			InternalLinksToIgnore: config.InternalLinksToIgnore,
-			Timeout:               &config.Timeout,
-			RequestRepeats:        &config.RequestRepeats,
-			AllowRedirect:         &config.AllowRedirect,
-			AllowCodeBlocks:       &config.AllowCodeBlocks,
-			IgnoreExternal:        &config.IgnoreExternal,
-			IgnoreInternal:        &config.IgnoreInternal,
+	fileCfg := FileConfig{}
+	if file.Config != nil {
+		fileCfg = *file.Config
+	}
+
+	timeout := getDefaultIntIfNil(cfg.Timeout, fileCfg.Timeout)
+	requestRepeats := getDefaultIntIfNil(cfg.RequestRepeats, fileCfg.RequestRepeats)
+	allowRedirect := getDefaultBoolIfNil(cfg.AllowRedirect, fileCfg.AllowRedirect)
+	allowCodeBlocks := getDefaultBoolIfNil(cfg.AllowCodeBlocks, fileCfg.AllowCodeBlocks)
+
+	ignoreInternal := getInternalIgnorePolicy(filePath, cfg, file.Config)
+	ignoreExternal := getDefaultBoolIfNil(cfg.IgnoreExternal, fileCfg.IgnoreExternal)
+
+	externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
+	internalLinksToIgnore := getInternalLinksToIgnore(cfg, file.Config)
+
+	return &FileConfig{
+		BasePath:              config.BasePath,
+		ExternalLinksToIgnore: externalLinksToIgnore,
+		InternalLinksToIgnore: internalLinksToIgnore,
+		Timeout:               &timeout,
+		RequestRepeats:        &requestRepeats,
+		AllowRedirect:         &allowRedirect,
+		AllowCodeBlocks:       &allowCodeBlocks,
+		IgnoreExternal:        &ignoreExternal,
+		IgnoreInternal:        &ignoreInternal,
+	}
+}
+
+func findFile(filePath string, files []File) (bool, File) {
+	for _, file := range files {
+		if filePath == file.RelPath && file.Config != nil {
+			return true, file
 		}
 	}
-	return nil
+	return false, File{}
+}
+
+func getExternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
+	externalLinksToIgnore := config.ExternalLinksToIgnore
+	if fileConfig != nil {
+		externalLinksToIgnore = unique(append(config.ExternalLinksToIgnore, fileConfig.ExternalLinksToIgnore...))
+	}
+
+	return externalLinksToIgnore
+}
+
+func getInternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
+	internalLinksToIgnore := config.InternalLinksToIgnore
+	if fileConfig != nil {
+		internalLinksToIgnore = unique(append(config.InternalLinksToIgnore, fileConfig.InternalLinksToIgnore...))
+	}
+
+	return internalLinksToIgnore
+}
+
+func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
+	internalIgnore := config.IgnoreInternal
+
+	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
+		internalIgnore = true
+	}
+
+	if fileConfig != nil && fileConfig.IgnoreInternal != nil {
+		internalIgnore = *fileConfig.IgnoreInternal
+	}
+
+	return internalIgnore
+}
+
+func isFileIgnored(filePath string, filesToIgnore []string) bool {
+	for _, fileToIgnore := range filesToIgnore {
+		if strings.HasPrefix(fileToIgnore, ".") {
+			if checkIfFileIsInIgnorePath(fileToIgnore, filePath) {
+				return true
+			}
+		} else {
+			if checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func getDefaultBoolIfNil(defaultValue bool, value *bool) bool {
+	if value == nil {
+		return defaultValue
+	}
+	return *value
+}
+
+func getDefaultIntIfNil(defaultValue int, value *int) int {
+	if value == nil {
+		return defaultValue
+	}
+	return *value
+}
+
+func checkIfFileIsInIgnorePath(fileToIgnore, filePath string) bool {
+	startingPath := path.Clean(fileToIgnore)
+	cleanFilePath := path.Clean(filePath)
+
+	output := strings.HasPrefix(cleanFilePath, startingPath)
+	return output
+}
+
+func checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath string) bool {
+	rootedFilePath := fmt.Sprintf(`/%s`, filePath)
+	dirToIgnore := fmt.Sprintf(`/%s/`, fileToIgnore)
+	return strings.Contains(rootedFilePath, dirToIgnore)
 }

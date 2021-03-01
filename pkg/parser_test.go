@@ -29,7 +29,7 @@ func TestParser(t *testing.T) {
 		}
 
 		parser := &Parser{}
-		result := parser.Links(content, dirPath)
+		result := parser.Links("", content, dirPath)
 
 		assert.Equal(t, expected, result)
 	})
@@ -63,7 +63,7 @@ func TestParser(t *testing.T) {
 		}
 
 		parser := &Parser{}
-		result := parser.Links(content, dirPath)
+		result := parser.Links("", content, dirPath)
 
 		assert.Equal(t, expected, result)
 	})
@@ -113,7 +113,7 @@ func TestParser(t *testing.T) {
 		}
 
 		parser := &Parser{}
-		result := parser.Links(content, dirPath)
+		result := parser.Links("", content, dirPath)
 
 		assert.Equal(t, expected, result)
 	})
@@ -139,10 +139,7 @@ func TestParser(t *testing.T) {
 	})
 
 	t.Run("Absolute Internal Path", func(t *testing.T) {
-		//TODO: we have to initialize this global variable, because this test don't pass when launched individually
-		//This variable was initialized in `config_file_test.go`.
-		// In future such dependency should be removed.
-		SetBasePath("test-markdowns", false)
+		basePath := "test-markdowns"
 		dirPath := "test-markdowns/sub_path"
 		content, err := readMarkdown("test-markdowns/sub_path/absolute_path.md")
 		require.NoError(t, err)
@@ -156,7 +153,7 @@ func TestParser(t *testing.T) {
 		}
 
 		parser := &Parser{}
-		result := parser.Links(content, dirPath)
+		result := parser.Links(basePath, content, dirPath)
 
 		assert.Equal(t, expected, result)
 	})
