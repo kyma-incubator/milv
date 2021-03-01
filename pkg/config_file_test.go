@@ -8,7 +8,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCombineConfigsForFile(t *testing.T) {
+func TestNewFileConfig(t *testing.T) {
+	trueBool := true
+	falseBool := false
 	t.Run("Check if links to ignore are merged", func(t *testing.T) {
 		//GIVEN
 		commands := cli.Commands{
@@ -95,14 +97,13 @@ func TestCombineConfigsForFile(t *testing.T) {
 		//GIVEN
 		timeout := 5
 		requestRepeats := 6
-		trueBool := true
 		cfg := &Config{
 			BasePath:        "path",
 			RequestRepeats:  requestRepeats,
 			Timeout:         timeout,
 			AllowRedirect:   true,
 			AllowCodeBlocks: true,
-			IgnoreExternal:  true,
+			IgnoreExternal:  false,
 			IgnoreInternal:  true,
 		}
 
@@ -112,7 +113,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 			RequestRepeats:  &requestRepeats,
 			AllowRedirect:   &trueBool,
 			AllowCodeBlocks: &trueBool,
-			IgnoreExternal:  &trueBool,
+			IgnoreExternal:  &falseBool,
 			IgnoreInternal:  &trueBool,
 		}
 		//WHEN
@@ -127,7 +128,6 @@ func TestCombineConfigsForFile(t *testing.T) {
 		//GIVEN
 		timeout := 5
 		requestRepeats := 6
-		trueBool := true
 		filePath := "path"
 
 		files := []File{
@@ -140,7 +140,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 					AllowRedirect:   &trueBool,
 					AllowCodeBlocks: &trueBool,
 					IgnoreExternal:  &trueBool,
-					IgnoreInternal:  &trueBool,
+					IgnoreInternal:  &falseBool,
 				}},
 		}
 
@@ -151,7 +151,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 			AllowRedirect:   false,
 			AllowCodeBlocks: false,
 			IgnoreExternal:  false,
-			IgnoreInternal:  false,
+			IgnoreInternal:  true,
 		}
 
 		expectedCfg := FileConfig{
@@ -162,7 +162,7 @@ func TestCombineConfigsForFile(t *testing.T) {
 			AllowRedirect:         &trueBool,
 			AllowCodeBlocks:       &trueBool,
 			IgnoreExternal:        &trueBool,
-			IgnoreInternal:        &trueBool,
+			IgnoreInternal:        &falseBool,
 		}
 
 		//WHEN

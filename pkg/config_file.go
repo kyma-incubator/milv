@@ -19,43 +19,44 @@ type FileConfig struct {
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
-	if config != nil {
-		cfg := *config
-		file := File{}
-
-		if found, foundFile := findFile(filePath, cfg.Files); found {
-			file = foundFile
-		}
-
-		fileCfg := FileConfig{}
-		if file.Config != nil {
-			fileCfg = *file.Config
-		}
-
-		timeout := getDefaultIntIfNil(cfg.Timeout, fileCfg.Timeout)
-		requestRepeats := getDefaultIntIfNil(cfg.RequestRepeats, fileCfg.RequestRepeats)
-		allowRedirect := getDefaultBoolIfNil(cfg.AllowRedirect, fileCfg.AllowRedirect)
-		allowCodeBlocks := getDefaultBoolIfNil(cfg.AllowCodeBlocks, fileCfg.AllowCodeBlocks)
-
-		ignoreInternal := getInternalIgnorePolicy(filePath, cfg, file.Config)
-		ignoreExternal := getDefaultBoolIfNil(cfg.IgnoreExternal, fileCfg.IgnoreExternal)
-
-		externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
-		internalLinksToIgnore := getInternalLinksToIgnore(cfg, file.Config)
-
-		return &FileConfig{
-			BasePath:              config.BasePath,
-			ExternalLinksToIgnore: externalLinksToIgnore,
-			InternalLinksToIgnore: internalLinksToIgnore,
-			Timeout:               &timeout,
-			RequestRepeats:        &requestRepeats,
-			AllowRedirect:         &allowRedirect,
-			AllowCodeBlocks:       &allowCodeBlocks,
-			IgnoreExternal:        &ignoreExternal,
-			IgnoreInternal:        &ignoreInternal,
-		}
+	if config == nil {
+		return nil
 	}
-	return nil
+
+	cfg := *config
+	file := File{}
+
+	if found, foundFile := findFile(filePath, cfg.Files); found {
+		file = foundFile
+	}
+
+	fileCfg := FileConfig{}
+	if file.Config != nil {
+		fileCfg = *file.Config
+	}
+
+	timeout := getDefaultIntIfNil(cfg.Timeout, fileCfg.Timeout)
+	requestRepeats := getDefaultIntIfNil(cfg.RequestRepeats, fileCfg.RequestRepeats)
+	allowRedirect := getDefaultBoolIfNil(cfg.AllowRedirect, fileCfg.AllowRedirect)
+	allowCodeBlocks := getDefaultBoolIfNil(cfg.AllowCodeBlocks, fileCfg.AllowCodeBlocks)
+
+	ignoreInternal := getInternalIgnorePolicy(filePath, cfg, file.Config)
+	ignoreExternal := getDefaultBoolIfNil(cfg.IgnoreExternal, fileCfg.IgnoreExternal)
+
+	externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
+	internalLinksToIgnore := getInternalLinksToIgnore(cfg, file.Config)
+
+	return &FileConfig{
+		BasePath:              config.BasePath,
+		ExternalLinksToIgnore: externalLinksToIgnore,
+		InternalLinksToIgnore: internalLinksToIgnore,
+		Timeout:               &timeout,
+		RequestRepeats:        &requestRepeats,
+		AllowRedirect:         &allowRedirect,
+		AllowCodeBlocks:       &allowCodeBlocks,
+		IgnoreExternal:        &ignoreExternal,
+		IgnoreInternal:        &ignoreInternal,
+	}
 }
 
 func findFile(filePath string, files []File) (bool, File) {
@@ -86,14 +87,14 @@ func getInternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
 }
 
 func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
-	internalIgnore := config.IgnoreExternal
+	internalIgnore := config.IgnoreInternal
 
 	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
 		internalIgnore = true
 	}
 
-	if fileConfig != nil && fileConfig.IgnoreInternal != nil && *fileConfig.IgnoreInternal {
-		internalIgnore = true
+	if fileConfig != nil && fileConfig.IgnoreInternal != nil {
+		internalIgnore = *fileConfig.IgnoreInternal
 	}
 
 	return internalIgnore
