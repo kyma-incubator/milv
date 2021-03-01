@@ -172,4 +172,20 @@ func TestNewFileConfig(t *testing.T) {
 		require.NotNil(t, mergedFileConfig)
 		assert.Equal(t, expectedCfg, *mergedFileConfig)
 	})
+
+	t.Run("Test with several ignore paths", func(t *testing.T) {
+		//GIVEN
+		firstPathToIgnore := "./website/src"
+		secondPathToIgnore := "./website/content"
+		filePath := "./website/content/news.md"
+		cfg := Config{FilesToIgnoreInternalLinksIn: []string{firstPathToIgnore, secondPathToIgnore}}
+
+		//WHEN
+		output := NewFileConfig(filePath, &cfg)
+
+		//THEN
+		require.NotNil(t, output)
+		require.NotNil(t, output.IgnoreInternal)
+		require.True(t, *output.IgnoreInternal)
+	})
 }

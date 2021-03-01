@@ -103,9 +103,13 @@ func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileCon
 func isFileIgnored(filePath string, filesToIgnore []string) bool {
 	for _, fileToIgnore := range filesToIgnore {
 		if strings.HasPrefix(fileToIgnore, ".") {
-			return checkIfFileIsInIgnorePath(fileToIgnore, filePath)
+			if checkIfFileIsInIgnorePath(fileToIgnore, filePath) {
+				return true
+			}
 		} else {
-			return checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath)
+			if checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath) {
+				return true
+			}
 		}
 	}
 	return false
@@ -129,7 +133,8 @@ func checkIfFileIsInIgnorePath(fileToIgnore, filePath string) bool {
 	startingPath := path.Clean(fileToIgnore)
 	cleanFilePath := path.Clean(filePath)
 
-	return strings.HasPrefix(cleanFilePath, startingPath)
+	output := strings.HasPrefix(cleanFilePath, startingPath)
+	return output
 }
 
 func checkIfFilePathContainsIgnoredDir(fileToIgnore, filePath string) bool {
