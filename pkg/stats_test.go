@@ -14,7 +14,6 @@ func TestStats(t *testing.T) {
 		BasePath: "test-markdowns",
 	}
 	t.Run("External Links", func(t *testing.T) {
-		t.Skip("Temporarily skipped because not existing host case doesn't work")
 		file, err := NewFile("test-markdowns/external_links.md", links, cfg)
 		require.NoError(t, err)
 
@@ -24,6 +23,7 @@ func TestStats(t *testing.T) {
 				Links: []Link{
 					Link{
 						AbsPath: "https://twitter.com",
+						Config:  &LinkConfig{},
 						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: true,
@@ -31,6 +31,7 @@ func TestStats(t *testing.T) {
 					},
 					Link{
 						AbsPath: "https://github.com",
+						Config:  &LinkConfig{},
 						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: true,
@@ -43,10 +44,11 @@ func TestStats(t *testing.T) {
 				Links: []Link{
 					Link{
 						AbsPath: "http://dont.exist.link.com",
+						Config:  &LinkConfig{},
 						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status:  false,
-							Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
+							Message: "404 Not Found",
 						},
 					},
 				},

@@ -9,7 +9,6 @@ import (
 func TestValidation(t *testing.T) {
 	//TODO: should we mock those external services?
 	t.Run("External Links", func(t *testing.T) {
-		t.Skip("Temporarily skipped because not existing host case doesn't work")
 		links := []Link{
 			Link{
 				AbsPath: "https://twitter.com",
@@ -45,7 +44,7 @@ func TestValidation(t *testing.T) {
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status:  false,
-					Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
+					Message: "404 Not Found",
 				},
 			},
 		}
