@@ -44,7 +44,7 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 	if config != nil {
 		backoff = config.Backoff
 	}
-	retry := NewRetry(backoff)
+	retry := NewLimiter(backoff)
 
 	return &File{
 		RelPath: filePath,

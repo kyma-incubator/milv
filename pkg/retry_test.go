@@ -11,7 +11,7 @@ import (
 func TestLimit(t *testing.T) {
 	//GIVEN
 	backoff := 1 * time.Second
-	retry := pkg.NewRetry(backoff)
+	retry := pkg.NewLimiter(backoff)
 
 	before := time.Now()
 	expected := before.Add(backoff)

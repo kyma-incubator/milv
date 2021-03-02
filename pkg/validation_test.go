@@ -17,7 +17,7 @@ func TestValidation(t *testing.T) {
 	t.Run("External Links", func(t *testing.T) {
 		client := http.Client{}
 
-		retryMock := new(RetryMock)
+		retryMock := new(retryMock)
 		retryMock.On("Limit").Return().Times(3)
 
 		links := []Link{
@@ -256,7 +256,7 @@ func TestValidation(t *testing.T) {
 			writer.WriteHeader(http.StatusTooManyRequests)
 		}))
 
-		retryMock := new(RetryMock)
+		retryMock := new(retryMock)
 		retryMock.On("Limit").Return().Times(requestRepeats)
 
 		v := NewValidator(client, retryMock)
@@ -278,10 +278,10 @@ func TestValidation(t *testing.T) {
 	})
 }
 
-type RetryMock struct {
+type retryMock struct {
 	mock.Mock
 }
 
-func (m *RetryMock) Limit() {
+func (m *retryMock) Limit() {
 	m.Called()
 }

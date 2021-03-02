@@ -2,14 +2,14 @@ package pkg
 
 import "time"
 
-type retry struct {
+type limiter struct {
 	d time.Duration
 }
 
-func NewRetry(d time.Duration) *retry {
-	return &retry{d: d}
+func NewLimiter(d time.Duration) *limiter {
+	return &limiter{d: d}
 }
 
-func (r *retry) Limit() {
+func (r *limiter) Limit() {
 	time.Sleep(r.d)
 }

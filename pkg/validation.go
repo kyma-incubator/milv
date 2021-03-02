@@ -12,17 +12,17 @@ import (
 	"github.com/schollz/closestmatch"
 )
 
-type Retry interface {
+type Limiter interface {
 	Limit()
 }
 
 type Validator struct {
 	client  http.Client
-	limiter Retry
+	limiter Limiter
 }
 
-func NewValidator(client http.Client, retry Retry) *Validator {
-	return &Validator{client: client, limiter: retry}
+func NewValidator(client http.Client, limiter Limiter) *Validator {
+	return &Validator{client: client, limiter: limiter}
 }
 
 func (v *Validator) Links(links []Link, optionalHeaders ...Headers) []Link {
@@ -158,7 +158,7 @@ func (v *Validator) externalLink(link Link) (Link, error) {
 			break
 		} else if resp.StatusCode == http.StatusTooManyRequests {
 			status = false
-			message = "Too many request"
+			message = "Too many requests"
 			v.limiter.Limit()
 			continue
 		} else {
