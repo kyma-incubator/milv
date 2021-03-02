@@ -29,27 +29,41 @@ go build
 
 ## Usage
 
+## Definitions
+internal link
+external link
+
 ### Command line parameters
 
 You can use the following parameters while using `milv` binary:
 
-| Name                           | Description                                             | Default Value      |
-| ------------------------------ | ------------------------------------------------------- | ------------------ |
+| Name                           | Description                                                 | Default Value      |
+| ------------------------------ | ------------------------------------------------------------| ------------------ |
 | `-base-path`                   | Root directory of the repository                            | `""`               |
+| `-bac
 | `-config-file`                 | Configuration file for the bot. See the [**Config file**](#config-file) section for more details.  | `milv.config.yaml` |
-| `-external-links-to-ignore`    | Comma-separated external links which will not be checked | `[]`               |
-| `-internal-links-to-ignore`    | Comma-separated internal links which will not be checked | `[]`               |
-| `-files-to-ignore`             | Comma-separated files which will not be checked          | `[]`               |
-| `-allow-redirect`              | Redirects will be allowed                               | `false`            |
-| `-request-repeats`             | Number of repeated request                               | `1`                |
-| `-allow-code-blocks`           | Links in code blocks will be checked                          | `false`            |
-| `-timeout`                     | Connection timeout (in seconds)                         | `30`               |
-| `-ignore-external`             | External links to be ignored                                  | `false`            |
-| `-ignore-internal`             | Internal links to be ignored                                   | `false`            |
-| `-v`                           | Verbose logging                                  | `false`            |
-| `-help` or `-h`                | Available parameters                               | n/a                |
+| `-external-links-to-ignore`    | Comma-separated external links which will not be checked    | `[]`               |
+| `-internal-links-to-ignore`    | Comma-separated internal links which will not be checked    | `[]`               |
+| `-files-to-ignore`             | Comma-separated files which will not be checked             | `[]`               |
+| `-allow-redirect`              | Redirects will be allowed                                   | `false`            |
+| `-request-repeats`             | Number of repeated request                                  | `1`                |
+| `-allow-code-blocks`           | Links in code blocks will be checked                        | `false`            |
+| `-timeout`                     | Connection timeout (in seconds)                             | `30`               |
+| `-ignore-external`             | External links to be ignored                                | `false`            |
+| `-ignore-internal`             | Internal links to be ignored                                | `false`            |
+| `-v`                           | Verbose logging                                             | `false`            |
+| `-help` or `-h`                | Available parameters                                        | n/a                |
 
 Files to be checked are given as free parameters.
+
+
+### Configuration file
+
+Configuration shuld be named `milv.config.yaml` if not overwritten by `-config-file` command line option.
+Full config example:
+```yaml
+
+```
 
 ### Examples
 
