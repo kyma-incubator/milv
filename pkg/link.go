@@ -4,7 +4,7 @@ type LinkType string
 
 const (
 	ExternalLink     LinkType = "ExternalLink"
-	InternalLink     LinkType = "InternalLinks"
+	InternalLink     LinkType = "InternalLink"
 	HashInternalLink LinkType = "HashInternalLink"
 )
 
