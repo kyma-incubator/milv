@@ -1,11 +1,11 @@
 package pkg
 
 import (
-	"github.com/stretchr/testify/mock"
-
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/mock"
 
 	"github.com/stretchr/testify/require"
 
@@ -273,7 +273,7 @@ func TestValidation(t *testing.T) {
 		//THEN
 		require.NoError(t, err)
 		assert.False(t, l.Result.Status)
-		assert.Equal(t, "Too many request", l.Result.Message)
+		assert.Equal(t, "Too many requests", l.Result.Message)
 		retryMock.AssertExpectations(t)
 	})
 }
