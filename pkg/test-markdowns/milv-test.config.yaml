@@ -1,5 +1,6 @@
 external-links-to-ignore: [ "localhost", "abc.com" ]
 internal-links-to-ignore: [ "LICENSE" ]
+backoff: 2s
 files-to-ignore-internal-links-in: [ "./internal-ignore" ]
 files-to-ignore: [ "./README.md" ]
 files:
