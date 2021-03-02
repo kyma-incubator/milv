@@ -1,7 +1,13 @@
 package pkg
 
 import (
+	"github.com/stretchr/testify/mock"
+
+	"net/http"
+	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -9,6 +15,11 @@ import (
 func TestValidation(t *testing.T) {
 	//TODO: should we mock those external services?
 	t.Run("External Links", func(t *testing.T) {
+		client := http.Client{}
+
+		retryMock := new(RetryMock)
+		retryMock.On("Limit").Return().Times(3)
+
 		links := []Link{
 			Link{
 				AbsPath: "https://twitter.com",
@@ -49,7 +60,7 @@ func TestValidation(t *testing.T) {
 			},
 		}
 
-		valid := &Validation{}
+		valid := NewValidator(client, retryMock)
 		result := valid.Links(links)
 
 		assert.Equal(t, expected, result)
@@ -130,7 +141,7 @@ func TestValidation(t *testing.T) {
 			},
 		}
 
-		valid := &Validation{}
+		valid := &Validator{}
 		result := valid.Links(links)
 
 		assert.Equal(t, expected, result)
@@ -231,9 +242,46 @@ func TestValidation(t *testing.T) {
 			},
 		}
 
-		valid := &Validation{}
+		valid := &Validator{}
 		result := valid.Links(links, existHeaders)
 
 		assert.Equal(t, expected, result)
 	})
+
+	t.Run("Check if throttling works", func(t *testing.T) {
+		//GIVEN
+		requestRepeats := 5
+		client := http.Client{}
+		svc := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			writer.WriteHeader(http.StatusTooManyRequests)
+		}))
+
+		retryMock := new(RetryMock)
+		retryMock.On("Limit").Return().Times(requestRepeats)
+
+		v := NewValidator(client, retryMock)
+		l := Link{
+			TypeOf:  ExternalLink,
+			AbsPath: svc.URL,
+			Config: &LinkConfig{
+				RequestRepeats: &requestRepeats,
+			},
+		}
+		//WHEN
+		l, err := v.externalLink(l)
+
+		//THEN
+		require.NoError(t, err)
+		assert.False(t, l.Result.Status)
+		assert.Equal(t, "Too many request", l.Result.Message)
+		retryMock.AssertExpectations(t)
+	})
+}
+
+type RetryMock struct {
+	mock.Mock
+}
+
+func (m *RetryMock) Limit() {
+	m.Called()
 }

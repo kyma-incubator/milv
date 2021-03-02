@@ -12,10 +12,20 @@ import (
 	"github.com/schollz/closestmatch"
 )
 
-type Validation struct {
+type Retry interface {
+	Limit()
 }
 
-func (v *Validation) Links(links []Link, optionalHeaders ...Headers) []Link {
+type Validator struct {
+	client  http.Client
+	limiter Retry
+}
+
+func NewValidator(client http.Client, retry Retry) *Validator {
+	return &Validator{client: client, limiter: retry}
+}
+
+func (v *Validator) Links(links []Link, optionalHeaders ...Headers) []Link {
 	if len(links) == 0 {
 		return []Link{}
 	}
@@ -45,7 +55,7 @@ func (v *Validation) Links(links []Link, optionalHeaders ...Headers) []Link {
 	return validatedLinks
 }
 
-func (v *Validation) ExternalLinks(links Links) (Links, error) {
+func (v *Validator) ExternalLinks(links Links) (Links, error) {
 	for _, link := range links {
 		if link.TypeOf == ExternalLink {
 			link, _ = v.externalLink(link)
@@ -54,7 +64,7 @@ func (v *Validation) ExternalLinks(links Links) (Links, error) {
 	return links, nil
 }
 
-func (v *Validation) InternalLink(links Links) (Links, error) {
+func (v *Validator) InternalLinks(links Links) (Links, error) {
 	for _, link := range links {
 		if link.TypeOf == InternalLink {
 			link, _ = v.externalLink(link)
@@ -63,7 +73,7 @@ func (v *Validation) InternalLink(links Links) (Links, error) {
 	return links, nil
 }
 
-func (v *Validation) HashInternalLinks(links Links, headers Headers) (Links, error) {
+func (v *Validator) HashInternalLinks(links Links, headers Headers) (Links, error) {
 	for _, link := range links {
 		if link.TypeOf == HashInternalLink {
 			link, _ = v.hashInternalLink(link, headers)
@@ -72,7 +82,7 @@ func (v *Validation) HashInternalLinks(links Links, headers Headers) (Links, err
 	return links, nil
 }
 
-func (*Validation) externalLink(link Link) (Link, error) {
+func (v *Validator) externalLink(link Link) (Link, error) {
 	if link.TypeOf != ExternalLink {
 		return link, nil
 	}
@@ -88,11 +98,10 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	}
 	absPath := fmt.Sprintf("%s://%s%s", url.Scheme, url.Host, url.Path)
 
-	client := &http.Client{}
 	if link.Config != nil && link.Config.Timeout != nil && *link.Config.Timeout != 0 {
-		client.Timeout = time.Duration(int(time.Second) * (*link.Config.Timeout))
+		v.client.Timeout = time.Duration(int(time.Second) * (*link.Config.Timeout))
 	} else {
-		client.Timeout = time.Duration(int(time.Second) * 30)
+		v.client.Timeout = time.Duration(int(time.Second) * 30)
 	}
 
 	requestRepeats := 1
@@ -101,7 +110,7 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	}
 
 	for i := 0; i < requestRepeats; i++ {
-		resp, err := client.Get(absPath)
+		resp, err := v.client.Get(absPath)
 		if err != nil {
 			status = false
 			message = err.Error()
@@ -113,12 +122,12 @@ func (*Validation) externalLink(link Link) (Link, error) {
 			allowRedirect = *link.Config.AllowRedirect
 		}
 
-		statusCode, regexpPattern := strconv.Itoa(resp.StatusCode), `^2[0-9][0-9]`
+		statusCode, http2xxPattern := strconv.Itoa(resp.StatusCode), `^2[0-9][0-9]`
 		if allowRedirect {
-			regexpPattern = `^2[0-9][0-9]|^3[0-9][0-9]`
+			http2xxPattern = `^2[0-9][0-9]|^3[0-9][0-9]`
 		}
 
-		if match, _ := regexp.MatchString(regexpPattern, statusCode); match && resp != nil {
+		if match, _ := regexp.MatchString(http2xxPattern, statusCode); match && resp != nil {
 			status = true
 
 			if !allowRedirect && url.Fragment != "" {
@@ -147,6 +156,11 @@ func (*Validation) externalLink(link Link) (Link, error) {
 
 			resp.Body.Close()
 			break
+		} else if resp.StatusCode == http.StatusTooManyRequests {
+			status = false
+			message = "Too many request"
+			v.limiter.Limit()
+			continue
 		} else {
 			status = false
 			message = resp.Status
@@ -159,7 +173,7 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	return link, nil
 }
 
-func (v *Validation) internalLink(link Link) (Link, error) {
+func (v *Validator) internalLink(link Link) (Link, error) {
 	if link.TypeOf != InternalLink {
 		return link, nil
 	}
@@ -182,7 +196,7 @@ func (v *Validation) internalLink(link Link) (Link, error) {
 	return link, nil
 }
 
-func (*Validation) hashInternalLink(link Link, headers Headers) (Link, error) {
+func (*Validator) hashInternalLink(link Link, headers Headers) (Link, error) {
 	if link.TypeOf != HashInternalLink {
 		return link, nil
 	}
@@ -196,7 +210,7 @@ func (*Validation) hashInternalLink(link Link, headers Headers) (Link, error) {
 	return link, nil
 }
 
-func (*Validation) isHashInFile(file, header string) bool {
+func (*Validator) isHashInFile(file, header string) bool {
 	markdown, err := readMarkdown(file)
 	if err != nil {
 		return false

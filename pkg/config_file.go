@@ -4,18 +4,20 @@ import (
 	"fmt"
 	"path"
 	"strings"
+	"time"
 )
 
 type FileConfig struct {
 	BasePath              string
-	ExternalLinksToIgnore []string `yaml:"external-links-to-ignore"`
-	InternalLinksToIgnore []string `yaml:"internal-links-to-ignore"`
-	Timeout               *int     `yaml:"timeout"`
-	RequestRepeats        *int     `yaml:"request-repeats"`
-	AllowRedirect         *bool    `yaml:"allow-redirect"`
-	AllowCodeBlocks       *bool    `yaml:"allow-code-blocks"`
-	IgnoreExternal        *bool    `yaml:"ignore-external"`
-	IgnoreInternal        *bool    `yaml:"ignore-internal"`
+	Backoff               time.Duration `yaml:"backoff"`
+	ExternalLinksToIgnore []string      `yaml:"external-links-to-ignore"`
+	InternalLinksToIgnore []string      `yaml:"internal-links-to-ignore"`
+	Timeout               *int          `yaml:"timeout"`
+	RequestRepeats        *int          `yaml:"request-repeats"`
+	AllowRedirect         *bool         `yaml:"allow-redirect"`
+	AllowCodeBlocks       *bool         `yaml:"allow-code-blocks"`
+	IgnoreExternal        *bool         `yaml:"ignore-external"`
+	IgnoreInternal        *bool         `yaml:"ignore-internal"`
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
@@ -40,7 +42,8 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 	allowRedirect := getDefaultBoolIfNil(cfg.AllowRedirect, fileCfg.AllowRedirect)
 	allowCodeBlocks := getDefaultBoolIfNil(cfg.AllowCodeBlocks, fileCfg.AllowCodeBlocks)
 
-	ignoreInternal := getInternalIgnorePolicy(filePath, cfg, file.Config)
+	backoff := getDefaultDurationIfProvided(cfg.Backoff, fileCfg.Backoff)
+	ignoreInternal := getInternalIgnorePolicy(filePath, cfg, fileCfg)
 	ignoreExternal := getDefaultBoolIfNil(cfg.IgnoreExternal, fileCfg.IgnoreExternal)
 
 	externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
@@ -48,6 +51,7 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 
 	return &FileConfig{
 		BasePath:              config.BasePath,
+		Backoff:               backoff,
 		ExternalLinksToIgnore: externalLinksToIgnore,
 		InternalLinksToIgnore: internalLinksToIgnore,
 		Timeout:               &timeout,
@@ -86,14 +90,14 @@ func getInternalLinksToIgnore(config Config, fileConfig *FileConfig) []string {
 	return internalLinksToIgnore
 }
 
-func getInternalIgnorePolicy(filepath string, config Config, fileConfig *FileConfig) bool {
+func getInternalIgnorePolicy(filepath string, config Config, fileConfig FileConfig) bool {
 	internalIgnore := config.IgnoreInternal
 
 	if isFileIgnored(filepath, config.FilesToIgnoreInternalLinksIn) {
 		internalIgnore = true
 	}
 
-	if fileConfig != nil && fileConfig.IgnoreInternal != nil {
+	if fileConfig.IgnoreInternal != nil {
 		internalIgnore = *fileConfig.IgnoreInternal
 	}
 
@@ -127,6 +131,14 @@ func getDefaultIntIfNil(defaultValue int, value *int) int {
 		return defaultValue
 	}
 	return *value
+}
+
+func getDefaultDurationIfProvided(globalCfg, fileCfg time.Duration) time.Duration {
+	var backoff = globalCfg
+	if fileCfg != 0 {
+		backoff = fileCfg
+	}
+	return backoff
 }
 
 func checkIfFileIsInIgnorePath(fileToIgnore, filePath string) bool {

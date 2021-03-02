@@ -1,8 +1,10 @@
 package pkg
 
 import (
+	"net/http"
 	"path/filepath"
 	"regexp"
+	"time"
 
 	"github.com/pkg/errors"
 )
@@ -20,7 +22,7 @@ type File struct {
 	Config  *FileConfig `yaml:"config"`
 	Stats   *FileStats
 	parser  *Parser
-	valid   *Validation
+	valid   *Validator
 }
 
 func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error) {
@@ -37,6 +39,13 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 		return nil, err
 	}
 
+	client := http.Client{}
+	backoff := 1 * time.Second
+	if config != nil {
+		backoff = config.Backoff
+	}
+	retry := NewRetry(backoff)
+
 	return &File{
 		RelPath: filePath,
 		AbsPath: absPath,
@@ -45,7 +54,7 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 		Links:   fileLinks,
 		Config:  config,
 		parser:  &Parser{},
-		valid:   &Validation{},
+		valid:   NewValidator(client, retry),
 	}, nil
 }
 
