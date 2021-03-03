@@ -2,14 +2,14 @@ package pkg
 
 import "time"
 
-type limiter struct {
+type waiter struct {
 	d time.Duration
 }
 
-func NewLimiter(d time.Duration) *limiter {
-	return &limiter{d: d}
+func NewWaiter(d time.Duration) *waiter {
+	return &waiter{d: d}
 }
 
-func (r *limiter) Limit() {
-	time.Sleep(r.d)
+func (l *waiter) Wait() {
+	time.Sleep(l.d)
 }

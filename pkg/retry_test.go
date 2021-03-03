@@ -11,15 +11,14 @@ import (
 func TestLimit(t *testing.T) {
 	//GIVEN
 	backoff := 1 * time.Second
-	retry := pkg.NewLimiter(backoff)
+	waiter := pkg.NewWaiter(backoff)
 
 	before := time.Now()
 	expected := before.Add(backoff)
 	//WHEN
-	retry.Limit()
+	waiter.Wait()
 
 	//THEN
 	afterExecution := time.Now()
 	assert.True(t, afterExecution.After(expected))
-	assert.WithinDuration(t, expected, afterExecution, 250*time.Millisecond)
 }

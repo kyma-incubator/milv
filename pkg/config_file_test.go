@@ -109,7 +109,7 @@ func TestNewFileConfig(t *testing.T) {
 			Backoff:         5 * time.Hour,
 		}
 
-		expectedCfg := &FileConfig{
+		expectedCfg := FileConfig{
 			BasePath:        "path",
 			Timeout:         &timeout,
 			RequestRepeats:  &requestRepeats,
@@ -176,7 +176,7 @@ func TestNewFileConfig(t *testing.T) {
 
 		//THEN
 		require.NotNil(t, mergedFileConfig)
-		assert.Equal(t, expectedCfg, *mergedFileConfig)
+		assert.Equal(t, expectedCfg, mergedFileConfig)
 	})
 
 	t.Run("Test with several ignore paths", func(t *testing.T) {

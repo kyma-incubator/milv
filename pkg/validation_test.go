@@ -17,8 +17,8 @@ func TestValidation(t *testing.T) {
 	t.Run("External Links", func(t *testing.T) {
 		client := http.Client{}
 
-		retryMock := new(retryMock)
-		retryMock.On("Limit").Return().Times(3)
+		waitMock := new(waitMock)
+		waitMock.On("Wait").Return().Times(3)
 
 		links := []Link{
 			Link{
@@ -60,7 +60,7 @@ func TestValidation(t *testing.T) {
 			},
 		}
 
-		valid := NewValidator(client, retryMock)
+		valid := NewValidator(client, waitMock)
 		result := valid.Links(links)
 
 		assert.Equal(t, expected, result)
@@ -256,11 +256,10 @@ func TestValidation(t *testing.T) {
 			writer.WriteHeader(http.StatusTooManyRequests)
 		}))
 
-		retryMock := new(retryMock)
-		retryMock.On("Limit").Return().Times(requestRepeats)
-
-		v := NewValidator(client, retryMock)
-		l := Link{
+		waitMock := &waitMock{}
+		waitMock.On("Wait").Return().Times(requestRepeats)
+		v := NewValidator(client, waitMock)
+		inputLink := Link{
 			TypeOf:  ExternalLink,
 			AbsPath: svc.URL,
 			Config: &LinkConfig{
@@ -268,20 +267,20 @@ func TestValidation(t *testing.T) {
 			},
 		}
 		//WHEN
-		l, err := v.externalLink(l)
+		outLink, err := v.externalLink(inputLink)
 
 		//THEN
 		require.NoError(t, err)
-		assert.False(t, l.Result.Status)
-		assert.Equal(t, "Too many requests", l.Result.Message)
-		retryMock.AssertExpectations(t)
+		assert.False(t, outLink.Result.Status)
+		assert.Equal(t, "Too many requests", outLink.Result.Message)
+		waitMock.AssertExpectations(t)
 	})
 }
 
-type retryMock struct {
+type waitMock struct {
 	mock.Mock
 }
 
-func (m *retryMock) Limit() {
+func (m *waitMock) Wait() {
 	m.Called()
 }

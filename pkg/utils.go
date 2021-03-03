@@ -1,7 +1,10 @@
 package pkg
 
 import (
+	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"regexp"
 	"strings"
@@ -82,4 +85,10 @@ func contains(slice []string, value string) bool {
 		}
 	}
 	return false
+}
+
+func CloseBody(closer io.Closer) {
+	if err := closer.Close(); err != nil {
+		log.Println(fmt.Sprintf("Error while closing response body: %+v", err))
+	}
 }

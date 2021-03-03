@@ -12,17 +12,17 @@ import (
 	"github.com/schollz/closestmatch"
 )
 
-type Limiter interface {
-	Limit()
+type Waiter interface {
+	Wait()
 }
 
 type Validator struct {
-	client  http.Client
-	limiter Limiter
+	client http.Client
+	waiter Waiter
 }
 
-func NewValidator(client http.Client, limiter Limiter) *Validator {
-	return &Validator{client: client, limiter: limiter}
+func NewValidator(client http.Client, limiter Waiter) *Validator {
+	return &Validator{client: client, waiter: limiter}
 }
 
 func (v *Validator) Links(links []Link, optionalHeaders ...Headers) []Link {
@@ -154,17 +154,18 @@ func (v *Validator) externalLink(link Link) (Link, error) {
 				}
 			}
 
-			resp.Body.Close()
+			CloseBody(resp.Body)
 			break
 		} else if resp.StatusCode == http.StatusTooManyRequests {
 			status = false
 			message = "Too many requests"
-			v.limiter.Limit()
+			v.waiter.Wait()
+			CloseBody(resp.Body)
 			continue
 		} else {
 			status = false
 			message = resp.Status
-			resp.Body.Close()
+			CloseBody(resp.Body)
 		}
 	}
 

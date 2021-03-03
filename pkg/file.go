@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"regexp"
-	"time"
 
 	"github.com/pkg/errors"
 )
@@ -25,7 +24,7 @@ type File struct {
 	valid   *Validator
 }
 
-func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error) {
+func NewFile(filePath string, fileLinks Links, config FileConfig) (*File, error) {
 	if match, _ := regexp.MatchString(`.md$`, filePath); !match {
 		return nil, errors.New("The specified file isn't a markdown file")
 	}
@@ -40,11 +39,7 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 	}
 
 	client := http.Client{}
-	backoff := 1 * time.Second
-	if config != nil {
-		backoff = config.Backoff
-	}
-	retry := NewLimiter(backoff)
+	waiter := NewWaiter(config.Backoff)
 
 	return &File{
 		RelPath: filePath,
@@ -52,9 +47,9 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 		DirPath: filepath.Dir(filePath),
 		Content: content,
 		Links:   fileLinks,
-		Config:  config,
+		Config:  &config,
 		parser:  &Parser{},
-		valid:   NewValidator(client, retry),
+		valid:   NewValidator(client, waiter),
 	}, nil
 }
 

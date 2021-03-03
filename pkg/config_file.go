@@ -20,9 +20,9 @@ type FileConfig struct {
 	IgnoreInternal        *bool         `yaml:"ignore-internal"`
 }
 
-func NewFileConfig(filePath string, config *Config) *FileConfig {
+func NewFileConfig(filePath string, config *Config) FileConfig {
 	if config == nil {
-		return nil
+		return FileConfig{}
 	}
 
 	cfg := *config
@@ -42,14 +42,14 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 	allowRedirect := getDefaultBoolIfNil(cfg.AllowRedirect, fileCfg.AllowRedirect)
 	allowCodeBlocks := getDefaultBoolIfNil(cfg.AllowCodeBlocks, fileCfg.AllowCodeBlocks)
 
-	backoff := getDefaultDurationIfProvided(cfg.Backoff, fileCfg.Backoff)
+	backoff := getDefaultDurationIfNotProvided(cfg.Backoff, fileCfg.Backoff)
 	ignoreInternal := getInternalIgnorePolicy(filePath, cfg, fileCfg)
 	ignoreExternal := getDefaultBoolIfNil(cfg.IgnoreExternal, fileCfg.IgnoreExternal)
 
 	externalLinksToIgnore := getExternalLinksToIgnore(cfg, file.Config)
 	internalLinksToIgnore := getInternalLinksToIgnore(cfg, file.Config)
 
-	return &FileConfig{
+	return FileConfig{
 		BasePath:              config.BasePath,
 		Backoff:               backoff,
 		ExternalLinksToIgnore: externalLinksToIgnore,
@@ -133,12 +133,11 @@ func getDefaultIntIfNil(defaultValue int, value *int) int {
 	return *value
 }
 
-func getDefaultDurationIfProvided(globalCfg, fileCfg time.Duration) time.Duration {
-	var backoff = globalCfg
-	if fileCfg != 0 {
-		backoff = fileCfg
+func getDefaultDurationIfNotProvided(defaultValue, value time.Duration) time.Duration {
+	if value != 0 {
+		return value
 	}
-	return backoff
+	return defaultValue
 }
 
 func checkIfFileIsInIgnorePath(fileToIgnore, filePath string) bool {
