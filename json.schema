@@ -18,7 +18,7 @@
     },
 
     "internal-links-to-ignore": {
-      "description": "List of internal links which have to be ignored",
+      "description": "List of internal links which will be ignored",
       "type": "array",
       "items": {
         "type": "string"
@@ -26,7 +26,7 @@
     },
 
     "files-to-ignore": {
-      "description": "List if files and directories which mustn't be checked",
+      "description": "List of files and directories in which links won't be checked",
       "type": "array",
       "items": {
         "type": "string"
@@ -44,31 +44,37 @@
     "timeout": {
       "description": "Timeout for HTTP external links check",
       "type": "number",
+      "default": 30,
     },
 
     "request-repeats": {
       "description": "Number of HTTP tries when validating external links",
       "type": "number",
+      "default": 1,
     },
 
     "allow-redirect": {
       "description": "Allow following redirects",
-      "type": "boolean"
+      "type": "boolean",
+      "default": "false"
     },
 
     "allow-code-blocks": {
       "description": "Links in code blocks will be checked",
-      "type": "boolean"
+      "type": "boolean",
+      "default": "false"
     },
 
     "ignore-external": {
       "description": "Internal links will be ignored",
-      "type": "boolean"
+      "type": "boolean",
+      "default": "false"
     },
 
     "ignore-internal": {
       "description": "Internal links will be ignored",
-      "type": "boolean"
+      "type": "boolean",
+      "default": "false"
     },
 
     "files": {
@@ -100,16 +106,19 @@
                     "timeout": {
                       "description": "Timeout for HTTP link external check",
                       "type": "integer",
+                      "default": 30,
                     },
 
                     "request-repeats": {
                       "description": "Number of HTTP tries when validating external link",
                       "type": "integer",
+                      "default": "1",
                     },
 
                     "allow-redirect": {
                       "description": "Allow following redirects",
                       "type": "boolean",
+                      "default": "false",
                     },
                   },
                 },
@@ -142,31 +151,37 @@
                   "timeout": {
                     "description": "Timeout for HTTP external links check",
                     "type": "number",
+                    "default": 30,
                   },
 
                   "request-repeats": {
                     "description": "Number of HTTP tries when validating external links",
                     "type": "number",
+                    "default": 1,
                   },
 
                   "allow-redirect": {
                     "description": "Allow following redirects",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": "false",
                   },
 
                   "allow-code-blocks": {
                     "description": "Links in code blocks will be checked in the file",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": "false",
                   },
 
                   "ignore-external": {
                     "description": "Internal links will be ignored in the file",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": "false",
                   },
 
                   "ignore-internal": {
                     "description": "Internal links will be ignored in the file",
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": "false",
                   },
                 },
               },
