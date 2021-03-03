@@ -10,7 +10,7 @@ import (
 func TestStats(t *testing.T) {
 	var links Links
 
-	cfg := &FileConfig{
+	cfg := FileConfig{
 		BasePath: "test-markdowns",
 	}
 	t.Run("External Links", func(t *testing.T) {

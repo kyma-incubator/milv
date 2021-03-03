@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"net/http"
 	"path/filepath"
 	"regexp"
 
@@ -20,10 +21,10 @@ type File struct {
 	Config  *FileConfig `yaml:"config"`
 	Stats   *FileStats
 	parser  *Parser
-	valid   *Validation
+	valid   *Validator
 }
 
-func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error) {
+func NewFile(filePath string, fileLinks Links, config FileConfig) (*File, error) {
 	if match, _ := regexp.MatchString(`.md$`, filePath); !match {
 		return nil, errors.New("The specified file isn't a markdown file")
 	}
@@ -37,15 +38,18 @@ func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error
 		return nil, err
 	}
 
+	client := http.Client{}
+	waiter := NewWaiter(config.Backoff)
+
 	return &File{
 		RelPath: filePath,
 		AbsPath: absPath,
 		DirPath: filepath.Dir(filePath),
 		Content: content,
 		Links:   fileLinks,
-		Config:  config,
+		Config:  &config,
 		parser:  &Parser{},
-		valid:   &Validation{},
+		valid:   NewValidator(client, waiter),
 	}, nil
 }
 

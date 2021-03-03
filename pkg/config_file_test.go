@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"testing"
+	"time"
 
 	"github.com/kyma-incubator/milv/cli"
 	"github.com/stretchr/testify/assert"
@@ -105,9 +106,10 @@ func TestNewFileConfig(t *testing.T) {
 			AllowCodeBlocks: true,
 			IgnoreExternal:  false,
 			IgnoreInternal:  true,
+			Backoff:         5 * time.Hour,
 		}
 
-		expectedCfg := &FileConfig{
+		expectedCfg := FileConfig{
 			BasePath:        "path",
 			Timeout:         &timeout,
 			RequestRepeats:  &requestRepeats,
@@ -115,6 +117,7 @@ func TestNewFileConfig(t *testing.T) {
 			AllowCodeBlocks: &trueBool,
 			IgnoreExternal:  &falseBool,
 			IgnoreInternal:  &trueBool,
+			Backoff:         5 * time.Hour,
 		}
 		//WHEN
 		newConfig := NewFileConfig("any-path", cfg)
@@ -141,6 +144,7 @@ func TestNewFileConfig(t *testing.T) {
 					AllowCodeBlocks: &trueBool,
 					IgnoreExternal:  &trueBool,
 					IgnoreInternal:  &falseBool,
+					Backoff:         10 * time.Second,
 				}},
 		}
 
@@ -152,6 +156,7 @@ func TestNewFileConfig(t *testing.T) {
 			AllowCodeBlocks: false,
 			IgnoreExternal:  false,
 			IgnoreInternal:  true,
+			Backoff:         1 * time.Second,
 		}
 
 		expectedCfg := FileConfig{
@@ -163,6 +168,7 @@ func TestNewFileConfig(t *testing.T) {
 			AllowCodeBlocks:       &trueBool,
 			IgnoreExternal:        &trueBool,
 			IgnoreInternal:        &falseBool,
+			Backoff:               10 * time.Second,
 		}
 
 		//WHEN
@@ -170,7 +176,7 @@ func TestNewFileConfig(t *testing.T) {
 
 		//THEN
 		require.NotNil(t, mergedFileConfig)
-		assert.Equal(t, expectedCfg, *mergedFileConfig)
+		assert.Equal(t, expectedCfg, mergedFileConfig)
 	})
 
 	t.Run("Test with several ignore paths", func(t *testing.T) {

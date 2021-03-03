@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"io/ioutil"
+	"time"
 
 	"gopkg.in/yaml.v2"
 
@@ -10,17 +11,18 @@ import (
 
 type Config struct {
 	BasePath                     string
-	Files                        []File   `yaml:"files"`
-	ExternalLinksToIgnore        []string `yaml:"external-links-to-ignore"`
-	InternalLinksToIgnore        []string `yaml:"internal-links-to-ignore"`
-	FilesToIgnore                []string `yaml:"files-to-ignore"`
-	FilesToIgnoreInternalLinksIn []string `yaml:"files-to-ignore-internal-links-in"`
-	Timeout                      int      `yaml:"timeout"`
-	RequestRepeats               int      `yaml:"request-repeats"`
-	AllowRedirect                bool     `yaml:"allow-redirect"`
-	AllowCodeBlocks              bool     `yaml:"allow-code-blocks"`
-	IgnoreExternal               bool     `yaml:"ignore-external"`
-	IgnoreInternal               bool     `yaml:"ignore-internal"`
+	Files                        []File        `yaml:"files"`
+	Backoff                      time.Duration `yaml:"backoff"`
+	ExternalLinksToIgnore        []string      `yaml:"external-links-to-ignore"`
+	InternalLinksToIgnore        []string      `yaml:"internal-links-to-ignore"`
+	FilesToIgnore                []string      `yaml:"files-to-ignore"`
+	FilesToIgnoreInternalLinksIn []string      `yaml:"files-to-ignore-internal-links-in"`
+	Timeout                      int           `yaml:"timeout"`
+	RequestRepeats               int           `yaml:"request-repeats"`
+	AllowRedirect                bool          `yaml:"allow-redirect"`
+	AllowCodeBlocks              bool          `yaml:"allow-code-blocks"`
+	IgnoreExternal               bool          `yaml:"ignore-external"`
+	IgnoreInternal               bool          `yaml:"ignore-internal"`
 }
 
 func NewConfig(commands cli.Commands) (*Config, error) {
@@ -81,8 +83,14 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		ignoreInternal = c.IgnoreInternal
 	}
 
+	backoff := 1 * time.Second
+	if c.Backoff > 0 {
+		backoff = c.Backoff
+	}
+
 	return &Config{
 		BasePath:                     commands.BasePath,
+		Backoff:                      backoff,
 		Files:                        c.Files,
 		ExternalLinksToIgnore:        unique(append(c.ExternalLinksToIgnore, commands.ExternalLinksToIgnore...)),
 		InternalLinksToIgnore:        unique(append(c.InternalLinksToIgnore, commands.InternalLinksToIgnore...)),
