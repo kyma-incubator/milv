@@ -9,9 +9,9 @@ It can be used for verification pull requests and as standalone library.
 
 You have to have [GoLang](https://golang.org/doc/install) in version 1.15 or above.) installed
 
-## Usage
+## Installation
 
-### Run the code from source
+### Build binary
 
 Run the following commands to get the source code, resolve external dependencies and build the project.
 The output binary will be in project directory with name: `milv`.
@@ -22,7 +22,7 @@ cd milv
 make build
 ```
 
-### Docker image
+### Build docker image
 
 There is an option to build docker image.
 ```bash
