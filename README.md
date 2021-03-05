@@ -72,6 +72,41 @@ Full documentation of all fields is in [json.schema](./json.schema).
 You can use the configuration file with command line arguments. Those settings will be combined.
 The command line parameters overwrites the configuration file parameters.
 
+#### Specification of configuration file
+
+| Name                           | Description                                                | Type | Default Value      |
+| ------------------------------ | ------------------------------------------------------------| ------|------------ |
+| backoff| Time to wait before next external link check when server responds with  429 status code (too many request) | duration | 1s |
+| external-links-to-ignore | List of external links which have to be ignored | array of strings | |
+| internal-links-to-ignore | List of internal links which will be ignored | array of strings| |
+| files-to-ignore | List of files and directories in which links won't be checked | array of strings | |
+| files-to-ignore-internal-links-in | List of files and directories in which internal links won't be checked | array of strings | |
+| timeout | Timeout for HTTP external link check | integer | 30 |
+| request-repeats | Number of HTTP tries when validating external link | integer | 1 |
+| allow-redirect | Allow following redirects | boolean  | false |
+| allow-code-blocks | Links in code blocks will be checked | boolean | false |
+| ignore-external | External links will be ignored | boolean | false |
+| ignore-internal | Internal links will be ignored | boolean | false |
+| files | List of files which should be treated with different settings | array of objects | |
+| files.path | Path to the file | string | |
+| files.links | List of link settings for the file | array of objects | | 
+| files.links.path | Link name | string | |
+| files.links.config | Configuration of specific link in the file | object | |
+| files.links.config.timeout | Timeout for HTTP link external check | integer | 30 |
+| files.links.config.request-repeats | Number of HTTP tries when validating external link | integer | 1 |
+| files.links.config.allow-redirect | Allow following redirects | boolean | false |
+| files.config | Configuration of specific file | object | |
+| files.config.backoff | Time to wait before external link check when server responds with  429 status code (too many request) | duration | 1s | 
+| files.config.external-links-to-ignore | List with external links which have to be ignored in the file | array of strings | |
+| files.config.internal-links-to-ignore | List with internal links which have to be ignored in the file | array of strings | | 
+| files.config.timeout | Timeout for HTTP external link check | integer | 30 |
+| files.config.request-repeats | Number of HTTP tries when validating external links | integer | 1 |
+| files.config.allow-redirect | Allow following redirects | boolean | false |
+| files.config.allow-code-blocks | Links in code blocks will be checked in the file | boolean | false |
+| files.config.ignore-external | External links will be ignored in the file | boolean | false |
+| files.config.ignore-internal | Internal links will be ignored in the file | boolean | false |
+
+
 ### Usage
 
 #### Command line parameters
