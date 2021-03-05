@@ -2,19 +2,19 @@
 
 ## Overview
 
-`MILV` is a program that parses, checks and validates internal & external URLs links in markdown files.
-It can be used for verification pull requests and as standalone library.
+MILV is a program that parses, checks, and validates internal and external URL links in Markdown files.
+You can use it either for verifying pull requests or as a standalone library.
 
 ## Prerequisites
 
-You have to have [GoLang](https://golang.org/doc/install) in version 1.15 or above installed
+You must have [GoLang](https://golang.org/doc/install) in version 1.15 or higher installed.
 
 ## Installation
 
-### Build binary
+### Build a binary
 
-Run the following commands to get the source code, resolve external dependencies and build the project.
-The output binary will be in project directory with name: `milv`.
+Run the following commands to get the source code, resolve external dependencies, and build the project.
+The output binary named `milv` will be created in the project directory.
 
 ```bash
 git clone https://github.com/kyma-incubator/milv.git
@@ -22,9 +22,9 @@ cd milv
 make build
 ```
 
-### Build docker image
+### Build a Docker image
 
-There is an option to build docker image.
+You can build a Docker image out of MILV to use it in a continuous integration pipeline.
 ```bash
 make build-image
 ```
@@ -37,8 +37,9 @@ docker run -v $PWD:/milv milv -base-path milv
 
 ### Definitions
 
-Internal link - is the link to the local resource, header, other file.
-External link - is the link to the HTTP resource
+MILV's logic is based on this basic distinction:
+- **Internal link** is the link to the local resource, header, or any other file.
+- **External link** is the link to the HTTP resource.
 
 ### Command line parameters
 
@@ -65,40 +66,42 @@ Files to be checked are given as free parameters.
 
 ### Configuration file
 
-The configuration file allows for more accurate parameterization of `milv` by having config per file.
-Config file must be a `.yaml` file and should be named `milv.config.yaml` if not overwritten by `-config-file` command line parameter.
+The configuration file allows you to parameterize MILV, and specify clearly which files or links MILV should ignore.
+A configuration file must be a `.yaml` file and should be named `milv.config.yaml`, unless you overwrite it with the `-config-file` command line parameter.
 
-You can use the configuration file with command line arguments. Those settings will be combined.
-The command line parameters overwrites the configuration file parameters.
+You can use the configuration file with command line arguments. 
+You can use the command line parameters to provide additional configuration for MILV or to overwrite the configuration file parameters.
 
 #### Specification of configuration file
 
-| Name                           | Description                                                | Type | Default Value      |
+| Parameter                           | Description                                                | Type | Default Value      |
 | ------------------------------ | ------------------------------------------------------------| ------|------------ |
-| backoff| Time to wait before next external link check when server responds with  429 status code (too many request) | duration | 1s |
+| backoff| Amount of time MILV must wait for the next external link validation when the server responds with the 429 status code (`Too many requests`) | duration | 1s |
 | external-links-to-ignore | List of external links which have to be ignored | array of strings | |
-| internal-links-to-ignore | List of internal links which will be ignored | array of strings| |
-| files-to-ignore | List of files and directories in which links won't be checked | array of strings | |
-| files-to-ignore-internal-links-in | List of files and directories in which internal links won't be checked | array of strings | |
-| timeout | Timeout for HTTP external link check | integer | 30 |
-| request-repeats | Number of HTTP tries when validating external link | integer | 1 |
+| internal-links-to-ignore | List of internal links for MILV to ignore | array of strings| |
+| files-to-ignore | List of files and directories in which MILV won't check any links | array of strings | |
+| files-to-ignore-internal-links-in | List of files and directories in which MILV won't check internal links | array of strings | |
+| timeout | Timeout for the HTTP external links check | integer | 30 |
+| request-repeats | Number of HTTP tries when validating external links | integer | 1 |
 | allow-redirect | Allow following redirects | boolean  | false |
-| allow-code-blocks | Links in code blocks will be checked | boolean | false |
+| allow-code-blocks | Allow MILV to check links in code blocks |  boolean | false |
 | ignore-external | External links will be ignored | boolean | false |
 | ignore-internal | Internal links will be ignored | boolean | false |
 | files | List of files which should be treated with different settings | array of objects | |
 | files.path | Path to the file | string | |
 | files.links | List of link settings for the file | array of objects | | 
 | files.links.path | Link name | string | |
-| files.links.config | Configuration of specific link in the file | object | |
-| files.links.config.timeout | Timeout for HTTP link external check | integer | 30 |
-| files.links.config.request-repeats | Number of HTTP tries when validating external link | integer | 1 |
+| files.links.config | Configuration of a specific link in the file | object | |
+| files.links.config.timeout | Timeout for the HTTP external links check | integer | 30 |
+| files.links.config.request-repeats | Number of HTTP tries when validating external links | integer | 1 |
 | files.links.config.allow-redirect | Allow following redirects | boolean | false |
-| files.config | Configuration of specific file | object | |
-| files.config.backoff | Time to wait before external link check when server responds with  429 status code (too many request) | duration | 1s | 
-| files.config.external-links-to-ignore | List with external links which have to be ignored in the file | array of strings | |
-| files.config.internal-links-to-ignore | List with internal links which have to be ignored in the file | array of strings | | 
-| files.config.timeout | Timeout for HTTP external link check | integer | 30 |
+| files.config | Configuration of a specific file | object | |
+| files.config.backoff | Amount of time MILV must wait for the next external link validation when the server responds with the 429 status code (`Too many requests`) | duration | 1s | 
+
+| files.config.external-links-to-ignore | Files in which MILV must ignore all external links | array of strings | |
+
+| files.config.internal-links-to-ignore | Files in which MILV must ignore all internal links | array of strings | | 
+| files.config.timeout | Timeout for the HTTP external links check | integer | 30 |
 | files.config.request-repeats | Number of HTTP tries when validating external links | integer | 1 |
 | files.config.allow-redirect | Allow following redirects | boolean | false |
 | files.config.allow-code-blocks | Links in code blocks will be checked in the file | boolean | false |
@@ -110,22 +113,21 @@ The command line parameters overwrites the configuration file parameters.
 
 ### Command line parameters
 
-- Checks all links, without matching `github.com` in all external links and without checking `vendor` directory in project.
+Use this command to check all links except for the `vendor` directory in the project and external links containing the `github.com` address.
 
 ```bash
 milv -files-to-ignore="vendor" -external-links-to-ignore="github.com"
 ```
 
-- Checks all links only in `./README.md` and `./foo/bar.md` files:
+Use this command to check all links in the `./README.md` and `./foo/bar.md` files:
 
 ```bash
 milv ./README.md ./foo/bar.md
 ```
 
-### Configuration file
+### Basic configuration file
 
-#### Basic example
-If your tree of your project look like this:
+Your project file structure should look as follows:
 
 ```
 ├── README.md
@@ -140,7 +142,7 @@ If your tree of your project look like this:
               └── bar.md
 ```
 
-given config file:
+See a sample configuration file:
 
 ```yaml
 external-links-to-ignore: ["localhost", "abc.com"]
@@ -153,21 +155,21 @@ files:
       internal-links-to-ignore: ["#contributing"]
 ```
 
-Before running the validation, `milv` removes the `./README.md` file from the files list.
+Before running the validation, MILV removes the `./README.md` file from the files list.
 
-For the `./src/foo.md` file mentioned in the example, milv concatenates the values for `external-links-to-ignore` entries.
-The list of ignored external links will be:
+For the `./src/foo.md` file mentioned in the example, MILV concatenates the values for **external-links-to-ignore** entries.
+The list of ignored external links will look as follows:
 ```yaml
 external-links-to-ignore: ["localhost", "abc.com", "github.com"]
 ```
 
-The same mechanism applies to `internal-links-to-ignore` parameter.
+The same mechanism applies to the **internal-links-to-ignore** parameter.
 
-#### Advanced configuration
+### Advanced configuration file
 
 > **NOTE**: For this example tree of project is the same as above.
 
-given config file:
+See a sample configuration file:
 
 ```yaml
 external-links-to-ignore: ["localhost", "abc.com"]
@@ -193,18 +195,18 @@ files:
           allow-redirect: true
 ```
 
-Having this configuration, the `milv` globally:
-- will check external links with 45 seconds timeout
-- will wait 2 second before doing another call if server responds with 429 status code (Too many requests)
+Having this configuration, MILV globally:
+- Checks external links with the 45 seconds timeout.
+-  Waits 2 seconds before making another call if the server responds with the 429 status code (`Too many requests`).
 - won't follow redirects
-- will allow checking links in code snippets
-- will do maximum of 5 requests in case of an error.
+- Checks links in code snippets.
+- Makes a maximum of 5 requests in case of an error.
 
-For `/src/foo.md` the `milv`:
-- will timeout after 30 seconds
-- will do maximum of 3 requests in case of an error.
-- will ignore links in code blocks
-- for link `https://github.com/kyma-incubator/milv` will timeout after 15 seconds and will follow redirections.
+For `/src/foo.md`, MILV:
+- Timeouts after 30 seconds.
+- Makes a maximum of 3 requests in case of an error.
+- Ignores links in code blocks.
+- For the `https://github.com/kyma-incubator/milv` link, MILV will timeout after 15 seconds and follow redirections.
 
 ### Typical errors
 
