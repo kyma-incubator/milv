@@ -7,7 +7,7 @@ It can be used for verification pull requests and as standalone library.
 
 ## Prerequisites
 
-You have to have [GoLang](https://golang.org/doc/install) in version 1.15 or above.) installed
+You have to have [GoLang](https://golang.org/doc/install) in version 1.15 or above installed
 
 ## Installation
 
@@ -67,7 +67,6 @@ Files to be checked are given as free parameters.
 
 The configuration file allows for more accurate parameterization of `milv` by having config per file.
 Config file must be a `.yaml` file and should be named `milv.config.yaml` if not overwritten by `-config-file` command line parameter.
-Full documentation of all fields is in [json.schema](./json.schema).
 
 You can use the configuration file with command line arguments. Those settings will be combined.
 The command line parameters overwrites the configuration file parameters.
