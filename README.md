@@ -106,9 +106,9 @@ The command line parameters overwrites the configuration file parameters.
 | files.config.ignore-internal | Internal links will be ignored in the file | boolean | false |
 
 
-### Usage
+## Usage
 
-#### Command line parameters
+### Command line parameters
 
 - Checks all links, without matching `github.com` in all external links and without checking `vendor` directory in project.
 
@@ -122,9 +122,9 @@ milv -files-to-ignore="vendor" -external-links-to-ignore="github.com"
 milv ./README.md ./foo/bar.md
 ```
 
-#### Configuration file
+### Configuration file
 
-##### Basic example
+#### Basic example
 If your tree of your project look like this:
 
 ```
