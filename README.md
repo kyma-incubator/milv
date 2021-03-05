@@ -48,7 +48,7 @@ You can use the following parameters while using `milv` binary:
 | ------------------------------ | ------------------------------------------------------------| ------------------ |
 | `-base-path`                   | Root directory of the repository                            | `""`               |
 | `-backoff`                     | Backoff timeout                                             | `"1s"`             |
-| `-config-file`                 | Configuration file for the bot. See the [**Config file**](#config-file) section for more details.  | `milv.config.yaml` |
+| `-config-file`                 | Configuration file for the bot. See the [**Config file**](#configuration-file) section for more details.  | `milv.config.yaml` |
 | `-external-links-to-ignore`    | Comma-separated external links which will not be checked    | `[]`               |
 | `-internal-links-to-ignore`    | Comma-separated internal links which will not be checked    | `[]`               |
 | `-files-to-ignore`             | Comma-separated files which will not be checked             | `[]`               |
