@@ -191,7 +191,7 @@ It is a good practice to add external local links (in the local network) to the 
 
 ## Development
 
-To contribute to this project, follow the rules from the general [CONTRIBUTING.md](https://github.com/kyma-project/community/blob/master/contributing/02-contributing.md) document in the `community` repository.
+If you want contribute this project, firstly read [CONTRIBUTING.md](CONTRIBUTING.md) file for details of submitting pull requests.
 
 ## License
 
