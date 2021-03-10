@@ -3,8 +3,8 @@
 The configuration file is where you parameterize MILV, and specify which files or links MILV should ignore in a given project.
 A configuration file must be a YAML file and should be named `milv.config.yaml`.
 
-You can overwrite the name of the configuration file with the [`-config-file`](./README.md#command-line-parameters) command line parameter.
-You can use a list of such [command line arguments](./README.md#command-line-parameters) to provide additional configuration for MILV or to overwrite the configuration file parameters.
+You can overwrite the name of the configuration file with the `-config-file` command line parameter.
+You can use a list of such [command line arguments](../README.md#command-line-parameters) to provide additional configuration for MILV or to overwrite the configuration file parameters.
 
 Place the configuration file at the root of your repository. See a sample project file structure:
 
