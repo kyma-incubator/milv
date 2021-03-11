@@ -84,7 +84,7 @@ See these examples:
 
 ### Configuration file
 
-MILV relies on the `milv.config.yaml` configuration file in which you define rules and exceptions for MILV, stating which files and types of links it should validate or ignore. See the [**Configuration file**](/docs/configuration-file.md) for sample `milv.config.yaml` files and a list of parameters you can use to configure such a file in your project.
+MILV relies on the `milv.config.yaml` configuration file in which you define rules and exceptions for MILV, stating which files and types of links it should validate or ignore. See the [**Configuration file**](/docs/configuration-file.md) document for a sample `milv.config.yaml` and a list of parameters you can use to configure it.
 
 ### Typical errors
 
