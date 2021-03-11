@@ -82,6 +82,10 @@ See these examples:
   milv ./README.md ./foo/bar.md
   ```
 
+### Configuration File
+
+MILV relies on the `milv.config.yaml` configuration file in which you define rules and exceptions for MILV, stating which files and types of links it should validate or ignore. See the [**Configuration file**](/docs/configuration-file.md) for sample `milv.config.yaml` files and and a list of parameters you can use to configure such a file.
+
 ### Typical errors
 
 The table describes types of errors MILV can return while checking the links and sample solutions to these issues:
