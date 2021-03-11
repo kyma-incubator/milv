@@ -203,7 +203,7 @@ func TestStats(t *testing.T) {
 						TypeOf:  HashInternalLink,
 						Result: LinkResult{
 							Status:  false,
-							Message: "The specified header doesn't exist in file",
+							Message: "The specified header doesn't exist in this file",
 						},
 						Config: &LinkConfig{},
 					},

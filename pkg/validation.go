@@ -147,7 +147,7 @@ func (v *Validator) externalLink(link Link) (Link, error) {
 
 					status = false
 					if closestAnchor != "" {
-						message = fmt.Sprintf("The specified anchor doesn't exist in website. Did you mean about #%s?", closestAnchor)
+						message = fmt.Sprintf("The specified anchor doesn't exist on the website. Did you mean #%s?", closestAnchor)
 					} else {
 						message = "The specified anchor doesn't exist"
 					}
@@ -187,7 +187,7 @@ func (v *Validator) internalLink(link Link) (Link, error) {
 		if len(splitted) == 2 {
 			if !v.isHashInFile(splitted[0], splitted[1]) {
 				link.Result.Status = false
-				link.Result.Message = "The specified header doesn't exist in file"
+				link.Result.Message = "The specified header doesn't exist in this file"
 			}
 		}
 	} else {
@@ -206,7 +206,7 @@ func (*Validator) hashInternalLink(link Link, headers Headers) (Link, error) {
 		link.Result.Status = true
 	} else {
 		link.Result.Status = false
-		link.Result.Message = "The specified header doesn't exist in file"
+		link.Result.Message = "The specified header doesn't exist in this file"
 	}
 	return link, nil
 }
