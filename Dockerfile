@@ -16,3 +16,4 @@ RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/* && apk add 
 COPY --from=builder /app /app
 
 ENTRYPOINT ["/app/main"]
+#test
