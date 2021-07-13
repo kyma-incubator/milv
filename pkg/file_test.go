@@ -36,7 +36,7 @@ func TestFile(t *testing.T) {
 				TypeOf:  ExternalLink,
 			},
 			Link{
-				AbsPath: "http://dont.exist.link.com",
+				AbsPath: "https://github.com/404",
 				Config:  &LinkConfig{},
 				TypeOf:  ExternalLink,
 			},
@@ -86,7 +86,7 @@ func TestFile(t *testing.T) {
 				},
 			},
 			Link{
-				AbsPath: "http://dont.exist.link.com",
+				AbsPath: "https://github.com/404",
 				Config:  &LinkConfig{},
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
