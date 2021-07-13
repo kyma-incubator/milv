@@ -8,4 +8,4 @@ Link to Twitter – [Twitter](https://twitter.com)
 
 Link to Github – [Github](https://github.com)
 
-Link to non exists domain - [Link](https://github.com/404)
+Link to non exists domain - [Link](https://httpbin.org/status/404)

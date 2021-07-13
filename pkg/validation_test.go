@@ -30,7 +30,7 @@ func TestValidation(t *testing.T) {
 				TypeOf:  ExternalLink,
 			},
 			Link{
-				AbsPath: "https://github.com/404",
+				AbsPath: "https://httpbin.org/status/404",
 				TypeOf:  ExternalLink,
 			},
 		}
@@ -51,7 +51,7 @@ func TestValidation(t *testing.T) {
 				},
 			},
 			Link{
-				AbsPath: "https://github.com/404",
+				AbsPath: "https://httpbin.org/status/404",
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status:  false,
