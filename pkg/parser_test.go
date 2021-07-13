@@ -23,7 +23,7 @@ func TestParser(t *testing.T) {
 				TypeOf:  ExternalLink,
 			},
 			Link{
-				AbsPath: "http://dont.exist.link.com",
+				AbsPath: "https://httpbin.org/status/404",
 				TypeOf:  ExternalLink,
 			},
 		}

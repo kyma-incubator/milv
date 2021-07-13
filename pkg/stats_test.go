@@ -43,7 +43,7 @@ func TestStats(t *testing.T) {
 				Count: 1,
 				Links: []Link{
 					Link{
-						AbsPath: "http://dont.exist.link.com",
+						AbsPath: "https://httpbin.org/status/404",
 						Config:  &LinkConfig{},
 						TypeOf:  ExternalLink,
 						Result: LinkResult{

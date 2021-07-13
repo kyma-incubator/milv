@@ -8,7 +8,7 @@ import (
 
 func TestLinks(t *testing.T) {
 	t.Run("Remove Ignored Links", func(t *testing.T) {
-		externalLinksToIgnore, internalLinksToIgnore := []string{"github.com"}, []string{"../external_links.md"}
+		externalLinksToIgnore, internalLinksToIgnore := []string{"twitter.com"}, []string{"../external_links.md"}
 		links := Links{
 			Link{
 				AbsPath: "https://twitter.com",
@@ -19,7 +19,7 @@ func TestLinks(t *testing.T) {
 				TypeOf:  ExternalLink,
 			},
 			Link{
-				AbsPath: "http://dont.exist.link.com",
+				AbsPath: "https://httpbin.org/status/404",
 				TypeOf:  ExternalLink,
 			},
 			Link{
@@ -46,11 +46,11 @@ func TestLinks(t *testing.T) {
 
 		expected := Links{
 			Link{
-				AbsPath: "https://twitter.com",
+				AbsPath: "https://github.com",
 				TypeOf:  ExternalLink,
 			},
 			Link{
-				AbsPath: "http://dont.exist.link.com",
+				AbsPath: "https://httpbin.org/status/404",
 				TypeOf:  ExternalLink,
 			},
 			Link{
