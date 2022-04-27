@@ -55,24 +55,6 @@ func (v *Validator) Links(links []Link, optionalHeaders ...Headers) []Link {
 	return validatedLinks
 }
 
-func (v *Validator) ExternalLinks(links Links) (Links, error) {
-	for _, link := range links {
-		if link.TypeOf == ExternalLink {
-			link, _ = v.externalLink(link)
-		}
-	}
-	return links, nil
-}
-
-func (v *Validator) InternalLinks(links Links) (Links, error) {
-	for _, link := range links {
-		if link.TypeOf == InternalLink {
-			link, _ = v.externalLink(link)
-		}
-	}
-	return links, nil
-}
-
 func (v *Validator) HashInternalLinks(links Links, headers Headers) (Links, error) {
 	for _, link := range links {
 		if link.TypeOf == HashInternalLink {
